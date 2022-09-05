@@ -1,0 +1,251 @@
+------------------------09/05----------------------------
+
+/* NVL2 함수 */
+-- NVL2 함수는 EXPR1을 검사하여 그 결과가 NULL이 아니면 EXPR2를 리턴, NULL이면 EXPR3 리턴
+-- NVL2(EXPR1, EXPR2, EXPR3)
+SELECT ENAME, SAL, COMM,
+        NVL2(COMM, SAL* 12 + COMM, SAL + 12)
+FROM EMP
+ORDER BY DEPTNO;
+-- NULL을 0 또는 다른 값으로 변환하기 위해 사용
+-- NVL(EXPR1, EXPR2) : EXPR1이 NULL이면 EXPR2 리턴
+--                     EXPR1, EXPR2는 반드시 데이터 타입이 일치해야 함
+--                     EXPR1이 NULL을 포함하는 칼럼 표현식, EXPR2에는 NULL을 대체하는 값 기술
+
+-- NVL2 함수는 EXPR1을 검사하여 그 결과가 NULL이 아니면 EXPR2를 리턴, NULL이면 EXPR3 리턴
+
+-- NULLIF(EXPR1, EXPR2) : EXPR1과 EXPR2가 동일한 경우 NULL, 그렇지 않으면 EXPR1 리턴
+SELECT NULLIF('A', 'A'), NULLIF('A', 'a')
+FROM DUAL;
+
+-- COALESCE(a1, a2, ..., an) : NULL이 아닌 첫 번째 인수 리턴
+
+/* TRIM() */ -- LENGTH 문자열 길이 값 구하기
+-- TRIM() 함수는 사용하는 인수 3종류에 따라 해당 문자열의 앞 OR 뒤 OR 양쪽의 지정 값 제거
+-- 기본적으로 TRIM은 공백을 제거하는 것이 기본 값, 해당 용도로 많이 사용
+-- TRIM('      TRIM          ') --> 'TRIM' : 문자열 양쪽의 공백 문자를 제거하는 형태
+-- TRIM(LEADING 'T' FROM 'TTTRIM   ') --> 'RIM   ' : 왼쪽의 지정 문자를 제거하는 형태
+-- LEADING과 FROM 사이에 우측 문장의 왼쪽 끝부터 제거할 문자열을 기입, 생략 시 공백 문자 제거
+SELECT LENGTH(TRIM(LEADING FROM ' GOOD ')),
+        -- 왼쪽 공백 제거, 오른쪽 공백은 남아있음
+       LENGTH(TRIM(TRAILING FROM ' GOOD ')),
+        -- 오른쪽 공백 제거, 왼쪽 공백은 남아있음
+       LENGTH(TRIM(BOTH FROM ' GOOD ')),
+        -- 양쪽 공백 제거
+       TRIM(BOTH FROM '  GOOD  ')
+FROM DUAL;
+-- TRIM(BOTH '' FROM '   TRIM   ') = TRIM(BOTH FROM '   TRIM   ') = TRIM('   TRIM   ')
+
+/* LTRIM(), RTRIM() */
+
+-- LTRIM(문자열, 지울 문자열)
+-- 문자열의 왼쪽에서 지울 문자열을 지운 값 리턴
+-- 왼쪽 끝의 글자부터 순서대로 지울 수 있으며, 중간이나 오른쪽의 문자는 못 지우고 원래 값 리턴
+SELECT LTRIM('goodbye', 'g'), LTRIM('goodbye', 'o'), LTRIM('goodbye', 'go')
+FROM DUAL;
+-- EXP) oodbye, goodbye, dbye
+
+-- RTRIM : LTRIM과 형식은 같고, 오른쪽 끝 문자부터 지움
+SELECT RTRIM('GOODBYE', 'E')
+FROM DUAL;
+-- EXP) GOODBY
+
+/* SUBSTR(), SUBSTRB() */
+-- SUBSTR('문자열', 시작 위치, 추출할 개수)
+-- 문자열의 시작 위치 인덱스부터 추출할 개수만큼 문자열 리턴
+-- 시작 위치 값이 양수 : 인덱스는 왼쪽에서 1부터 시작 (JDS = 1 2 3)
+-- 시작 위치 값이 음수 : 오른쪽에서 -1부터 시작 (JDS = -3 -2 -1)
+-- 한글의 경우도 똑같이 동작
+SELECT SUBSTR('GOOD MORNING JOHN', 0, 6) -- G가 0이 아니고 1
+FROM DUAL;
+
+SELECT SUBSTR('GOOD MORNING JOHN', -4, 0)
+FROM DUAL;
+-- 추출할 개수가 0 : NULL 리턴
+
+-- SUBSTRB('문자열', 시작 인덱스, 바이트 수)
+-- 문자열의 시작 인덱스부터 바이트 수만큼 문자 추출
+SELECT SUBSTRB('GOOD MORNING JOHN', 0, 4)
+FROM DUAL;
+-- 한글은 인덱스를 2씩 차지하며, 각 글자당 3 ~ 4BYTE 차지(3.N byte)
+SELECT SUBSTRB('일이삼사오육칠팔구십', 0, 17)
+FROM DUAL;
+
+/* REPLACE() */
+-- REPLACE('문자열', '기존 문자열', '바꿀 문자열')
+-- 문자열 안에서 기존 문자열들을 바꿀 문자열로 변경
+SELECT REPLACE('GOOD MORNING TOM', 'MORNING', 'EVENING')
+FROM DUAL;
+
+/* TRANSLATE() */
+-- REPLACE가 지정된 문자열 단위로 교체하는 개념이라면
+-- TRANSLATE는 문자 단위로 바꿈
+SELECT REPLACE('YOU ARE NOT ALONE', 'YOU', 'WE'),
+        -- 'YOU' -> 'WE'
+       TRANSLATE('YOU ARE NOT ALONE', 'YOU', 'WE')
+        -- 'Y' -> 'W', 'O' -> 'E', 'U' -> ''
+FROM DUAL;
+-- 1:1 대응
+
+
+/* INSTR() */ 
+-- 문자열에서 원하는 문자를 찾을 때 INSTR 함수 사용
+-- INSTR 함수는 대소문자를 구별하여 문자 검색, 여러 개의 문자를 찾을 때는 OR 연산자 사용
+-- 해당 문자를 한 번 찾으면 더 이상 검색을 하지 않기 때문에 필요에 따라서 뒤(마지막)에서부터 검색을 할 수도 있다.
+
+-- INSTR('문자열', '찾을 문자 값', 찾기를 시작할 위치 인덱스(1, -1), 찾은 결과의 순번(1...N))
+
+-- 아래의 경우 'GOOD MORNING JOHN'의 제일 왼쪽 1번 인덱스(G)부터 처음으로 발견되는
+-- 'OR' 문자의 'O' 문자 인덱스 위치 리턴
+SELECT INSTR('GOOD MORNING JOHN', 'OR', 1)
+FROM DUAL;
+
+SELECT INSTR('GOOD MORNING JOHN', 'N', 1, 2)
+FROM DUAL;
+-- 두 번째로 나오는 N 문자의 인덱스 위치 리턴 : 11
+
+/* 숫자형을 문자형으로 변환 */
+-- 0    자릿수, 자릿수가 맞지 않을 경우 0으로 채움
+-- 9    자릿수, 자릿수가 맞지 않으면 채우지 않음
+-- L    각 지역별 통화 기호를 앞에 표시
+-- .    소수점
+-- ,    1,000의 자리 구분
+
+-- 날짜형으로 변환하는 TO_DATE
+-- TO_DATE('문자', 'FORMAT');
+
+-- 숫자형으로 변환하는 TO_NUMBER()
+SELECT TO_NUMBER('20,000', '99,999') - TO_NUMBER('10,000', '99,999')
+FROM DUAL;
+
+-- Q1) EMP 테이블로부터 2007년 4월 2일에 입사한 사원 검색.
+SELECT *
+FROM EMP
+WHERE HIREDATE = TO_DATE('2007/04/02', 'YYYY/MM/DD');
+
+-- Q2) 입사일 달 기준으로 잘라내기 TO_CHAR() 사용
+SELECT TO_CHAR(HIREDATE, 'YYYY/MM/DD') 입사일,
+       TO_CHAR(TRUNC(HIREDATE, 'MONTH'), 'YYYY/MM/DD') "입사일 월초"
+FROM EMP;
+
+-- Q3) 날짜 사이의 개월수 구하기. 오늘로부터 입사일 사이의 개월수(TRUNC() 사용)
+SELECT ENAME, SYSDATE, HIREDATE "입사일", TRUNC(MONTHS_BETWEEN(SYSDATE, HIREDATE)) "근속 개월수"
+FROM EMP;
+
+-- Q4) 입사 날짜에 6개월을 추가(ADD_MONTHS() 사용)
+SELECT ENAME, HIREDATE, ADD_MONTHS(HIREDATE, 6) "입사일 + 6개월"
+FROM EMP;
+
+-- Q5) 오늘을 기준으로 최초로 도래하는 금요일은 언제인가 ?
+SELECT NEXT_DAY(SYSDATE, 6)
+-- = SELECT NEXT_DAY(SYSDATE, '금요일')
+FROM DUAL;
+
+-- Q6) SUBSTR() 사용, 9월에 입사한 사원 출력
+SELECT ENAME, HIREDATE 입사, SUBSTR(HIREDATE, 4, 2) "입사월"
+FROM EMP
+WHERE SUBSTR(HIREDATE, 4, 2) = 09;
+
+--    Q6-1) SUBSTR() 사용, 2003년에 입사한 사원 검색
+    SELECT ENAME, HIREDATE 입사, SUBSTR(HIREDATE, 1, 2) 입사년도
+    FROM EMP
+    WHERE SUBSTR(HIREDATE, 1, 2) = 03;
+    
+--    Q6-2) SUBSTR() 사용, '기'로 이름이 끝나는 사원 검색
+    SELECT EMPNO, ENAME, JOB
+    FROM EMP
+    WHERE SUBSTR(ENAME, -1, 1) = '기';
+    
+--    Q6-3) SUBSTR() 사용, 입사일자 년도(2자리), 몇 월(2자리), 며칠(2자리)을 추출하여 조회
+--    HIREDATE 년도 월  일
+--    07/03/01  07  03  01
+    SELECT EMPNO, ENAME, HIREDATE 입사, 
+           SUBSTR(HIREDATE, 1, 2) 년도, 
+           SUBSTR(HIREDATE, 4, 2) 월, 
+           SUBSTR(HIREDATE, 7, 2) 일
+    FROM EMP;
+
+--    Q6-4) SUBSTR() 사용, 이름의 두 번째 글자가 '동'이 있는 사원 검색
+    SELECT EMPNO, ENAME, JOB
+    FROM EMP
+    WHERE SUBSTR(ENAME, -2, 1) = '동';
+
+-- Q7) INSTR() 사용, ENAME에 '동' 들어가는 사람 조회. (EMPNO, ENAME 출력, WHERE 조건절 사용)
+    SELECT EMPNO, ENAME, JOB, INSTR(ENAME, '동', 1) AS INS
+    FROM EMP
+    WHERE INSTR(ENAME, '동', 1) != 0;
+
+/* DECODE() : SWITCH 문의 역할을 하는 함수 */
+
+-- DECODE(표현식, 조건1, 결과1, 조건2, 결과2, 조건3, 결과3, ..., 기본 결과)
+-- 프로그래밍 언어의 SWITCH-CASE 문과 같은 기능
+-- 표현식의 값이 조건 1과 같으면 결과 1을, 조건 2와 같으면 결과 2를, 조건 3과 같으면 결과 3을 리턴
+-- 모든 조건에 안 맞으면 기본 결과 리턴
+
+-- CASE WHEN 조건1 THEN 결과1 ELSE 결과2 END AS 별칭
+-- DECODE가 제공하지 못하는 비교 연산의 단점 해결
+-- CASE 함수는 다양한 비교 연산자를 이용하여 조건을 제시할 수 있으므로 범위 지정 가능
+-- CASE 함수는 프로그램 언어의 IF ELSE IF ELSE와 유사한 구조를 가짐
+
+SELECT ENAME, 
+       DEPTNO, 
+       DECODE(DEPTNO, 
+        10, '경리부', 
+        20, '인사과', 
+        30, '영업부', 
+        40, '전산부') 
+       AS DNAME
+FROM EMP
+ORDER BY DNAME;
+
+-- Q) 직급에 따라 직급이 '부장'인 사원은 5%, '과장'인 사원은 10%,
+-- '대리'인 사원은 15%, '사원'인 사원은 20% 급여 인상하기
+-- AS UPSAL 이용, EMPNO, ENAME, JOB, SAL 출력
+SELECT EMPNO, ENAME, JOB, SAL,
+       DECODE(JOB,
+        '부장', SAL * 1.05,
+        '과장', SAL * 1.10,
+        '대리', SAL * 1.15,
+        '사원', SAL * 1.20,
+        SAL)
+       AS UPSAL
+FROM EMP
+ORDER BY SAL ASC;
+
+-- Q) 입사일을 년도는 2자리(YY), 월은 숫자(MON)로 표시
+-- 요일은 약어(DY)로 지정하여 출력 (TO_CHAR() 사용)
+SELECT HIREDATE, 
+       TO_CHAR(HIREDATE, 'YY/MON/DY')
+FROM EMP;
+
+-- Q) EMP 테이블로부터 홀수 사번들의 입사 날짜 조회
+-- 짝수 사번은 NULL 출력 (DECODE, MOD 사용)
+SELECT EMPNO, 
+       ENAME, 
+       DECODE(MOD(EMPNO, 2), 
+              0, NULL, 
+              1, HIREDATE)
+       AS ODDNUMBER
+FROM EMP;
+
+-- Q) 근속일수 구하기 (ROUND() 사용, AS 근속일수)
+SELECT EMPNO, ENAME, JOB, HIREDATE,
+       ROUND(MONTHS_BETWEEN(SYSDATE, HIREDATE)) AS 근속일수
+FROM EMP;
+
+-- 특정 기준으로 반올림하는 ROUND 함수
+-- ROUND 함수는 숫자를 반올림하는 함수로 학습하였다
+-- 그러나, 이 함수에 포맷 모델을 지정하면 숫자 이외에 날짜에 대해서도 반올림 가능
+-- ROUND(DATE, FORMAT);
+
+-- Q) NVL을 사용하여 직속 상관이 없는 근무자 찾기 (EMPNO, ENAME, MGR)
+-- 특히 NVL(TO_CHAR(MGR, '9999'), 'C E O') 해석하여 주석 달기
+SELECT EMPNO, ENAME, 
+       NVL(TO_CHAR(MGR, '9999'), 'C E O') AS "직속 상관"
+FROM EMP
+WHERE MGR IS NULL;
+
+-- COLUMN = MGR에 포함된 데이터 : 1003, 1010, ... --> 숫자
+-- NVL(EXPR1, EXPR2) : EXPR1과 EXPR2의 데이터 타입이 반드시 일치해야 하는데 EXPR2 = 'CEO' : 문자
+-- 그러므로 MGR에 포함된 데이터들을 TO_CHAR로 문자화 시킴('9999'는 네자리로 변환한다는 뜻)
+-- WHERE 절에는 MGR IS NULL을 넣어서 직속 상관이 없는(즉, MGR = NULL) 사람만 조회하게 함
