@@ -1,0 +1,681 @@
+---------------09/07---------------
+
+/* 데이터 무결성 제약조건 (DATA INTEGRITY CONSTRAINT RULE) */
+-- 테이블에 부적절한 자료가 입력되는 것을 방지하기 위해 테이블을 생성할 때
+-- 각 COLUMN에 대해서  정의하는 여러가지 규칙
+
+/* 무결성 제약조건의 종류 */
+-- NOT NULL : NULL을 허용하지 않음
+-- UNIQUE : 중복된 값을 허용하지 않음. 항상 유일한 값을 갖도록 함
+-- PRIMARY KEY : NULL을 허용하지 않고 중복된 값을 허용하지 않음
+--               NOT NULL + UNIQUE
+
+-- FOREIGN KEY : 참조되는 테이블의 COLUMN의 값이 존재하면 허용
+-- CHECK : 저장 가능한 데이터 값이 범위나 조건을 지정하여 설정한 값만을 허용
+
+/* 제약 조건 확인하기 */
+-- 오라클은 USER_CONSTRAINTS 데이터 딕셔너리로 제약 조건에 관한 정보들을 알려준다
+-- USER_CONSTRAINTS 데이터 딕셔너리를 조회하면
+-- 내가 만든 제약 조건의 정보들을 조회할 수 있다.
+
+DESC USER_CONSTRAINTS;
+SELECT *
+FROM USER_CONSTRAINTS;
+-- 해당 계정이 소유한 제약 조건 조회
+
+SELECT OWNER, 
+       CONSTRAINT_NAME, 
+       CONSTRAINT_TYPE,
+       TABLE_NAME,
+       SEARCH_CONDITION,
+       R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS;
+
+-- OWNER : 제약 조건을 소유한 계정
+-- CONSTRAINT_NAME : 제약 조건 명
+-- CONSTRAINT_TYPE : 제약 조건 유형
+-- TABLE_NAME : 제약 조건이 속한 테이블 명
+-- SEARCH_CONDITION : CHECK 조건일 경우에는 어떤 내용이 조건으로 사용 되었는지 설명
+-- R_CONSTRAINT_NAME : FOREIGN KEY인 경우 PRIMARY KEY를 참조 했는지에 대한 정보
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS;
+
+-- CONSTRAINT_TYPE은 제약 조건 유형을 저장하는 COLUMN
+-- 종류 : P, R, U, C
+-- P : PRIMARY KEY
+-- R : FOREIGN KEY
+-- U : UNIQUE
+-- C : CHECK, NOT NULL
+
+/* 무결성 제약의 예 */
+-- 학생은 하나의 학과에 소속한다.
+-- 하나의 강좌는 한 명의 담당 교수가 배정된다.
+-- 하나의 교과목은 각 학기마다 두 강좌 이하만 개설할 수 있다.
+-- 학생은 한 학기에 20학점 이상 수강할 수 없다.
+
+/* 테이블의 무결성 제약 */
+-- 의미 : 테이블을 정의하거나 변경 과정에서 실행 가능한 무결성 제약
+-- NOT NULL, UNIQUE, CHECK, DEFAULT
+
+/* 기타 무결성 제약 */
+-- 위에 해당 안되는 제약들
+-- 주장, 트리거
+
+/* 기본키 무결성 제약(PRIMARY KEY) */
+-- 테이블에서 레코드들이 반드시 유일하게 식별될 수 있어야 한다는 조건
+-- 정의 : 기본 키는 NULL 값을 가질 수 없으며
+--        기본 키로 정의된 필드에 대해서는 명시적으로 NOT NULL 조건을 설정하지 않아도 된다.
+
+/* 제약 조건 설정 */
+-- 1) 제약 조건 명명 규칙(CONSTRAINT_NAME)
+--      - [TABLE_NAME]_[COLUMN_NAME]_[CONSTRAINT_TYPE]
+--      - EMP04_EMPNO_UK
+
+-- 2) COLUMN LEVEL 제약 조건 설정
+--      - [COLUMN_NAME] [DATA_TYPE] CONSTRAINT [CONSTRAINT_NAME] [CONSTRAINT_TYPE]
+
+----------------------EMP01
+
+DROP TABLE EMP01;
+CREATE TABLE EMP01( -- 제약 조건 없음
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10),
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2)
+        );
+-- CREATE TABLE        
+DESC EMP01;
+
+INSERT
+INTO EMP01
+VALUES (NULL, NULL, '사원', 30);
+-- INSERT TUPLE
+
+SELECT *
+FROM EMP01;
+-- CONFIRM
+
+SELECT OWNER, 
+       CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME,
+       SEARCH_CONDITION,
+       R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP01';
+-- 아무 것도 검색 되지 않음
+
+DROP TABLE EMP01;
+-- GET RID OF EMP01
+
+CREATE TABLE EMP01( -- 제약 조건 추가
+        EMPNO NUMBER(4) NOT NULL,
+        ENAME VARCHAR2(10) NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2)
+        );
+-- RECREATE TABLE EMP01
+
+SELECT OWNER, 
+       CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME,
+       SEARCH_CONDITION,
+       R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP01';
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS;
+
+SELECT *
+FROM USER_CONSTRAINTS;
+-- 해당 계정이 소유한 제약 조건 조회
+
+INSERT
+INTO EMP01
+VALUES (NULL, NULL, '사원', 10);
+-- ERROR : CANNOT INSERT NULL INTO ("TESTER1"."EMP01"."EMPNO")
+/* CREATE TABLE EMP01( 
+        EMPNO NUMBER(4) NOT NULL,
+        ENAME VARCHAR2(10) NOT NULL, */
+-- 때문에 EMPNO, ENAME에 NULL을 넣을 수 없다.
+
+DESC EMP01;
+SELECT *
+FROM EMP01;
+
+INSERT
+INTO EMP01
+VALUES (1000, '허준', '사원', 30);
+
+COMMIT;
+
+SELECT *
+FROM EMP01;
+
+INSERT 
+INTO EMP01
+VALUES (1000, '홍길동', '과장', 20);
+
+SELECT *
+FROM EMP01;
+-- EMPNO, ENAME : NOT NULL의 제약 조건이 걸려 있고, 중복된 값은 허용된다.
+
+/* 유일한 값만 허용하는 제약 조건 UNIQUE */
+-- 특정 COLUMN에 대해 자료가 중복되지 않게 하는 제약 조건
+-- 지정된 COLUMN에는 유일한 값이 수록되게 하는 것
+-- NULL 값은 예외
+-- 만약 NULL 값도 입력되지 않게 제한하려면
+-- 테이블 생성 시 NOT NULL 제약 조건도 기술해야함
+-- FORMAT : CONSTRAINT [CONSTRAINT_NAME] UNIQUE (FIELD_LIST)
+
+--------------------------EMP03
+
+CREATE TABLE EMP03(
+        EMPNO NUMBER(4) UNIQUE,
+        ENAME VARCHAR2(10) NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2)
+        );
+
+DESC EMP03;
+
+INSERT
+INTO EMP03
+VALUES (1000, '허준', '사원', 30);
+
+SELECT *
+FROM EMP03;
+
+INSERT
+INTO EMP03
+VALUES (1000, '홍길동', '과장', 30);
+-- ERROR : UNIQUE CONSTRAINT VIOLATED.
+-- EMPNO(UNIQUE) 제약이 걸려있기 때문에 1000이 한 번 더 들어갈 수 없다.
+
+INSERT
+INTO EMP03
+VALUES (NULL, '안중근', '대리', 20);
+
+INSERT
+INTO EMP03
+VALUES (NULL, '이순신', '부장', 30);
+-- UNIQUE 제약 : 중복된 값은 허용하지 않지만 NULL은 허용한다. NULL은 2개 이상도 가능.
+
+SELECT *
+FROM EMP03;
+
+----------------------------EMP04
+
+DROP TABLE EMP04;
+
+CREATE TABLE EMP04(
+        EMPNO NUMBER(4) CONSTRAINT EMP04_EMPNO_UK UNIQUE,
+        ENAME VARCHAR2(10) CONSTRAINT EMP04_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2)
+        );
+        
+DESC EMP04;
+
+-- Q) EMP04 테이블의 제약 조건을 살펴보자
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP04');
+-- 왜 안나오는지 이유 :
+-- 'EMP04'로 치면 나오고, 'emp04'로 치면 안 나옴  --> '' 안에서는 대,소문자 구분 필요
+
+INSERT 
+INTO EMP04
+VALUES(1000, '허준', '사원', 30);
+
+INSERT
+INTO EMP04
+VALUES(1000, '홍길동', '과장', 20);
+-- ERROR : UNIQUE CONSTRAINT EMPNO VIOLATED
+-- EMP04 테이블의 EMPNO에는 'UNIQUE' 제약 조건이 걸려있다.
+-- 허준의 EMPNO 1000이 입력된 후에는 EMPNO 자리에 1000이 다시 들어올 수 없기 때문에
+-- 홍길동의 데이터는 입력되지 않는다.
+
+SELECT *
+FROM EMP04;
+
+---------------------------EMP05
+
+CREATE TABLE EMP05(
+        EMPNO NUMBER(4) CONSTRAINT EMP05_EMPNO_PK PRIMARY KEY,
+        ENAME VARCHAR2(10) CONSTRAINT EMP05_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2)
+        );
+        
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP05');
+
+INSERT 
+INTO EMP05
+VALUES(1000, '허준', '사원', 30);
+
+INSERT
+INTO EMP05
+VALUES(1000, '홍길동', '과장', 20);
+-- ERROR : UNIQUE CONSTRAINT EMPNO_PK VIOLATED
+-- ERROR 이유 : PRIMARY KEY(; PK, 기본 키)는 UNIQUE와 NOT NULL의 특성을 다 가진다
+
+SELECT *
+FROM EMP05;
+
+INSERT
+INTO EMP05
+VALUES(NULL, '이순신', '부장', 30);
+-- ERROR : CANNOT INSERT NULL INTO EMPNO
+-- ERROR 이유 : PRIMARY KEY(; PK, 기본 키)는 UNIQUE와 NOT NULL의 특성을 다 가진다
+
+
+/* 참조 무결성을 위한 제약 조건 : FOREIGN KEY */
+-- 자식 테이블인 사원 테이블(EMP)의 부서 번호(DEPTNO) COLUMN을
+-- 부모 테이블인 부서 테이블(DEPT)의 부서 번호(DEPTNO)를 부모 키로 설정하는 것이다.
+-- 한 테이블의 레코드가 다른 테이블을 참조
+-- 참조되는 테이블에 해당 레코드가 반드시 존재하거나 NULL 값을 가진다.
+-- 이 조건이 지켜지지 않는다면 참조하는 레코드는
+-- 실제로 존재하지 않는 레코드를 참조하게 되는 오류가 발생한다.
+-- 실제 존재하지 않는 잘못된 값이 저장되지 않도록 보장하는 수단이다.
+
+/* FORMAT : CONSTRAINT [CONSTRAINT_NAME] FOREIGN KEY (FIELD_LIST 1)
+   REFERENCES TABLE_NAME (FIELD_LIST 2) */
+
+-- CONSTRAINT EMP_EMPNO_FK FOREIGN KEY (DEPTNO)
+-- REFERENCES DEPT (DEPTNO)
+
+-- FIELD_LIST 1 : FOREIGN KEY로 정의하는 FIELD들의 LIST
+-- TABLE_NAME : REFERENCE 대상인 TABLE의 이름
+-- FIELD_LIST 2 : REFERENCE 대상 TABLE의 기본 키
+-- 참조 무결성 제약은 외래 키 정의에 의해 DBMS에서 자동적으로 검증
+-- DBMS는 이 조건을 위배하게 되는 연산의 실행을 거부한다.
+
+-- 외래 키 설정
+-- EX) ALTER TABLE STUDENT
+--     ADD CONSTRAINT FK_DEPT FOREIGN KEY (DEPT_ID)
+--     REFERENCES DEPARTMENT (DEPT_ID);
+-- 학생 테이블에서 부서 테이블의 부서 아이디를 참조하는 외래 키인 FK_DEPT를 추가
+
+
+-- 외래 키 삭제
+-- EX) ALTER TABLE STUDENT DROP CONSTRAINT FK_DEPT;
+-- 학생 테이블에서 FK_DEPT 제약 조건을 없앤다.
+
+
+/* 테이블 이름으로 제약 조건 살펴보기 */
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP01');
+-- SYS_C007140  C  EMP01  : C는 NOT NULL이 걸려있다.
+
+/* 제약 조건이 지정된 COLUMN 살펴보기 */
+SELECT CONSTRAINT_NAME,
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('EMP01');
+
+COMMIT;
+
+--------------외래 키 설정
+ALTER TABLE EMP01
+ADD CONSTRAINT EMP01_EMPNO_FK FOREIGN KEY (DEPTNO)
+REFERENCES DEPT (DEPTNO);
+-- CONSTRAINT_NAME  CONSTRAINT_TYPE  TABLE_NAME
+-- EMP01_EMPNO_FK          R           EMP01         생성(R : FOREIGN KEY)
+
+-------------외래 키 삭제
+ALTER TABLE EMP01
+DROP CONSTRAINT EMP01_EMPNO_FK;
+
+
+---------------------------------------- DEPT
+/* 제약 조건 살펴보기 */
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('DEPT');
+
+/* 제약 조건이 지정된 COLUMN 살펴보기 */
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('DEPT');
+
+SELECT *
+FROM DEPT;
+
+SELECT *
+FROM EMP;
+
+COMMIT;
+
+INSERT
+INTO EMP(EMPNO, ENAME, JOB, DEPTNO)
+VALUES(1010, '홍길동', '사원', 50);
+-- ERROR : UNIQUE CONSTRAINT TESTER1.PK_EMP VIOLATED
+-- EMPNO : PRIMARY KEY --> UNIQUE, NOT NULL
+-- 1010은 이미 존재하므로 데이터를 삽입할 수 없다.
+
+ROLLBACK;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP');
+
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('EMP');
+
+INSERT 
+INTO DEPT(DEPTNO, DNAME, LOC)
+VALUES(50, '기획부', 'LA');
+
+SELECT *
+FROM DEPT;
+
+/* IN 연산자를 사용하여 두 개의 테이블에 대한 현재 사용자의 제약 조건 조회하기 */
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP', 'DEPT');
+
+SELECT *
+FROM EMP05;
+
+DELETE EMP05
+WHERE EMPNO = 1010;
+
+INSERT
+INTO EMP05
+VALUES (1010, '홍길동', '사원', 50);
+
+COMMIT;
+
+------------------------------EMP06
+/* 참조 무결성을 위한 FOREIGN KEY 제약 조건 */
+DROP TABLE EMP06;
+
+CREATE TABLE EMP06(
+        EMPNO NUMBER(4) CONSTRAINT EMP06_EMPNO_PK PRIMARY KEY,
+        ENAME VARCHAR2(10) CONSTRAINT EMP06_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2) CONSTRAINT EMP06_DEPTNO_FK
+                         REFERENCES DEPT(DEPTNO)
+        );
+        
+DESC EMP06;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP06');
+
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('EMP06');
+
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP06';
+
+INSERT
+INTO EMP06
+VALUES (1010, '홍길동', '사원', 50);
+
+SELECT *
+FROM EMP06;
+-- 여기서 알 수 있는 제약 조건 명은 명명 규칙입니다
+-- DEPT(DEPTNO) 50번 부서(기획부)가 참조 제약 조건이 걸린 것
+-- EMP06 테이블에서 1010 홍길동 사원 50(부서 테이블) <-- DEPTNO
+-- REFERENCES DEPT(DEPTNO) : DEPT 테이블에서 50번 부서 기획부 LA
+
+INSERT
+INTO EMP06
+VALUES(1010, '홍길동', '사원', 30);
+-- ERROR : unique constraint (TESTER1.EMP06_EMPNO_PK) violated
+-- EMPNO가 중복
+
+
+/* CHECK 제약 조건 */
+-- 입력되는 값을 체크하여 설정된 값 이외의 값이 들어오면
+-- 오류 메시지와 함께 명령이 수행되지 못하게 한다.
+-- 조건으로 데이터의 값의 범위나 특정 패턴의 숫자나 문자 값을 설정할 수 있다.
+
+-- FORMAT : CONSTRAINT CONSTRAINT_NAME CHECK (CONDITION)
+--          CONSTRAINT EMP_YEAR_CK CHECK (YEAR >= 1 AND YEAR <= 4)
+
+
+------------------------------EMP07
+
+DROP TABLE EMP07;
+
+CREATE TABLE EMP07(
+        EMPNO NUMBER(4) CONSTRAINT EMP07_EMPNO_PK PRIMARY KEY,
+        ENAME VARCHAR2(10) CONSTRAINT EMP07_ENAME_NN NOT NULL,
+        SAL NUMBER(7, 2) CONSTRAINT EMP07_SAL_CK CHECK (SAL BETWEEN 500 AND 5000),
+        GENDER VARCHAR2(1) CONSTRAINT EMP07_GENDER_CK CHECK (GENDER IN('M', 'F'))
+        );
+
+DESC EMP07;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP07');
+
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('EMP07');
+
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP07';
+
+INSERT
+INTO EMP07
+VALUES(1000, '허준', 500, 'M');
+
+SELECT *
+FROM EMP07;
+
+INSERT
+INTO EMP07
+VALUES(1000, '허준', 200, 'A');
+-- ERROR : CHECK CONSTRAINT (TESTER1.EMP07_GENDER_CK) violated
+-- 500 <= SAL <= 5000, GENDER = M OR F
+
+/* DOMAIN 제약 */
+-- 각 필드의 값은 정의된 도메인에 속한 값만 허용한다.
+
+-- DEFAULT 제약 조건
+-- 아무런 값을 입력하지 않았을 때 지정한 값이 입력이 되도록 하고 싶을때 사용한다
+-- 지역명이라는 COLUMN에 아무런 값도 입력하지 않았을 때
+-- DEFAULT 값인 'SEOUL'이 들어가도록 하고 싶은 경우
+-- DEFAULT 제약 조건을 지정한다.
+
+-- RECORD를 삽입할 때 필드에 대한 값이 정해지지 않았을 경우
+-- 사전에 정해놓은 값으로 입력하도록 지정
+-- NULL 값 대신에 지정된 값이 자동적으로 입력된다.
+COMMIT;
+SELECT *
+FROM TAB;
+
+------------------------------DEPT01
+
+DROP TABLE DEPT01;
+
+CREATE TABLE DEPT01(
+        DEPTNO NUMBER(2) PRIMARY KEY,
+        DNAME VARCHAR2(14),
+        LOC VARCHAR2(13) DEFAULT '서울'
+        );
+DESC DEPT01;
+
+SELECT *
+FROM DEPT01;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('DEPT01');
+
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('DEPT01');
+
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'DEPT01';
+
+-- DEFAULT를 별도로 설정할 수 있다.
+-- ALTER TABLE STUDENT
+-- ALTER COLUMN YEAR SET DEFAULT 1;
+
+-- DEFAULT를 해제할 수도 있다.
+-- ALTER TABLE STUDENT
+-- ALTER COLUMN YEAR DROP DEFAULT;
+
+-- 오라클은 DEFAULT에 대한 별도의 설정 및 해제에 SQL 표준을 따르지 않는다.
+-- ALTER TABLE STUDENT MODIFY (YEAR INT DEFAULT 1);
+-- ALTER TABLE STUDENT MODIFY (YEAR INT DEFAULT NULL);
+
+INSERT
+INTO DEPT01(DEPTNO, DNAME)
+VALUES (10, '경리부');
+
+-----------------------------EMP08
+
+CREATE TABLE EMP08(
+        EMPNO NUMBER(4) PRIMARY KEY,
+        ENAME VARCHAR2(10) NOT NULL,
+        JOB VARCHAR2(9) UNIQUE,
+        DEPTNO NUMBER(2) REFERENCES DEPT(DEPTNO)
+        );
+DESC EMP08;
+
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP08';
+
+/* DROP TABLE 'TABLE_NAME' [CASCADE CONSTRAINTS]; */
+-- 종속된 제약 조건이 삭제된다.
+
+/* ALTER TABLE 'TABLE_NAME' DROP CONSTRAINT 'CONSTRAINT_NAME' */
+-- 테이블의 PK, 제약 조건 삭제
+
+/* ALTER TABLE 'TABLE_NAME' DROP CONSTRAINT PRIMARY KEY; */
+
+-- 제약 조건 조회
+-- 테이블 레벨 방식으로 제약 조건 지정하기
+-- 테이블 레벨의 제약 조건 지정은 COLUMN을 모두 정의하고 나서
+-- 테이블 정의를 마무리 짓기 전에 따로 생성된 COLUMN들에 대한 제약 조건을
+-- 한꺼번에 지정하는 것입니다.
+-- 복합키로 기본키를 지정할 경우 COLUMN 형식은 안되고 반드시 테이블 레벨 방식으로 형식을 작성해야만 한다.
+-- 두 개 이상의 COLUMN이 하나의 기본키로 구성될 때 작성하는 것
+
+SELECT *
+FROM ALL_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP08';
+
+COMMIT;
+
+-----------------------------EMP09
+
+CREATE TABLE EMP09(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10) NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2),
+        UNIQUE(JOB),
+        FOREIGN KEY(DEPTNO) REFERENCES DEPT(DEPTNO)
+        );
+-- COLUMN을 정의하고 나서 따로 제약 조건을 지정한 형태
+DESC EMP09;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP09');
+
+-----------------------------EMP10
+
+CREATE TABLE EMP10(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10) CONSTRAINT EMP10_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2),
+        CONSTRAINT EMP10_EMPNO_PK PRIMARY KEY (EMPNO),
+        CONSTRAINT EMP10_JOB_PK UNIQUE(JOB),
+        CONSTRAINT EMP10_DEPTNO_FK FOREIGN KEY (DEPTNO)
+        REFERENCES DEPT (DEPTNO)
+        );
+-- 테이블 레벨 방식으로 제약 조건 지정하기
+DESC EMP10;
+
+-----------------------------MEMBER01
+
+CREATE TABLE MEMBER01(
+        NAME VARCHAR2(10),
+        ADDRESS VARCHAR2(30),
+        HPHONE VARCHAR2(16),
+        CONSTRAINT MEMBER01_COMBO_PK PRIMARY KEY (NAME, HPHONE)
+        );
+DESC MEMBER01;
+
+-- 제약 조건 살펴보기
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('MEMBER01');
+
+-- 제약 조건이 지정된 COLUMN 살펴보기 (복합 키인지 살펴보기 위해)
+SELECT CONSTRAINT_NAME,       
+       TABLE_NAME,
+       COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME IN('MEMBER01');
+
+COMMIT;
+
+/* 제약 조건 추가 */
+-- ALTER TABLE 'TABLE_NAME'
+-- ADD CONSTRAINT [CONSTRAINT_NAME] [CONSTRAINT_CONDITION] [COLUMN_NAME]
+
+-- ADD : 추가, MODIFY : 변경, DROP : 삭제
