@@ -1,0 +1,562 @@
+-----------------------09/06---------------------------
+
+-- 그룹 함수
+-- SUM : 그룹의 누적 합계 리턴
+-- AVG : 그룹의 평균 리턴
+-- COUNT : 그룹의 총 개수 리턴
+-- MAX : 그룹 최대값 리턴
+-- MIN : 그룹 최소값 리턴
+-- STDDEV : 그룹 표준편차 리턴
+-- VARIANCE : 그룹의 분산 리턴
+
+SELECT COUNT(*) AS "전체 사원 수",
+       COUNT(COMM) "커미션 받는 사원 수"
+FROM EMP;
+
+-- COUNT(*) : 테이블의 전체 로우 개수 구함
+-- COUNT(COMM) : COMM 칼럼에서 NULL이 아닌 로우 개수 구함
+
+-- 특정 칼럼을 기준으로 그룹함수를 사용할 경우 어떤 칼럼값을 기준으로 그룹함수를 줄지 결정할 때 사용
+-- GROUP BY
+
+-- SELECT COLUMN_NAME, GROUP FUNCTION
+-- FROM TABLE_NAME
+-- WHERE CONDITION
+-- GROUP BY COLUMN_NAME;
+
+-- 사원 테이블을 부서 번호로 그룹 만들기
+SELECT DEPTNO
+FROM EMP
+GROUP BY DEPTNO;
+
+-- Q1) 소속 부서별 최대 급여와 최소 급여 구하기
+SELECT DEPTNO AS "부서 번호", MAX(SAL) AS "최대 급여", MIN(SAL) AS "최소 급여"
+FROM EMP
+GROUP BY DEPTNO
+ORDER BY DEPTNO DESC;
+
+-- Q1-1) 최고 급여의 평균 출력
+SELECT MAX(AVG(SAL))
+FROM EMP
+GROUP BY DEPTNO;
+
+-- SELECT 절에 조건을 사용하여 결과를 제한할 때는 WHERE 절을 사용하지만
+-- 그룹의 결과를 제한할 때는 HAVING 절을 사용
+
+-- Q2) 부서별 급여 평균이 500 이상인 부서의 번호와 급여 평균 구하기
+SELECT DEPTNO, AVG(SAL) AS "급여 평균"
+FROM EMP
+GROUP BY DEPTNO
+HAVING AVG(SAL) >= 500;
+
+-- Q3) 다음 실행문의 에러 이유를 적고, 올바르게 수정.
+SELECT DEPTNO, ENAME, AVG(sal)
+FROM EMP
+GROUP BY DEPTNO;
+-- 목록이 GROUP BY 목록과 일치하지 않아 에러 발생
+
+-- A)
+SELECT DEPTNO, ENAME, AVG(sal)
+FROM EMP
+GROUP BY DEPTNO, ENAME;
+-- GROUP BY DEPTNO, ENAME; 을 지우고 실행시켜도 에러 발생
+
+-- Q4) HAVING 절을 사용하여 사원을 제외하고 급여 총액이 1,000 이상인
+-- 직급별 인원 수를 구하고, 급여 총액 구해보기, SAL 순으로 정렬
+-- A4-1)
+SELECT JOB, COUNT(*), SUM(SAL)
+FROM EMP
+WHERE JOB != '사원'
+GROUP BY JOB
+HAVING SUM(SAL) >= 1000
+ORDER BY SUM(SAL);
+
+-- A4-2)
+SELECT JOB, COUNT(*), SUM(SAL)
+FROM EMP
+GROUP BY JOB
+HAVING JOB != '사원' AND SUM(SAL) >= 1000
+ORDER BY SUM(SAL);
+
+-- Q5) 부서 별 급여 최고액, 최저액, 총액 및 평균 출력(ROUND() 사용)
+SELECT DEPTNO,
+       MAX(SAL) AS "MAXIMUM", 
+       MIN(SAL) AS "MINIMUM",
+       SUM(SAL) AS "SUM",
+       ROUND(AVG(SAL)) AS "AVERAGE"
+FROM EMP
+GROUP BY DEPTNO;
+
+-- Q6) 담당 직급별 사원 수 출력
+SELECT JOB, COUNT(JOB)
+FROM EMP
+GROUP BY JOB;
+
+-- Q7) 과장의 수를 조회해보자, GROUP BY 사용
+SELECT JOB, COUNT(JOB)
+FROM EMP
+WHERE JOB = '과장'
+GROUP BY JOB;
+
+-- Q8) 급여 최고액, 급여 최저액의 차액 출력하기
+SELECT MAX(SAL), MIN(SAL), ABS(MAX(SAL) - MIN(SAL)) "차액"
+FROM EMP;
+
+-- Q9) 부서 별 사원 수, 평균 급여를 반올림. AS "NUMBER OF PEOPLE"
+-- 부서 그룹 정렬, 부서 번호를 오름차순으로 정렬
+SELECT DEPTNO, COUNT(JOB) AS "NUMBER OF PEOPLE", ROUND(AVG(SAL),2) SAL
+FROM EMP
+GROUP BY DEPTNO
+ORDER BY DEPTNO ASC;
+
+-- Q10) 부서 번호, 이름, 지역명, 사원수, 부서 내의 모든 사원의 평균 급여 출력(DECODE() 사용)
+-- DNAME, LOCATION, NUMBER OF PEOPLE, SAL
+SELECT DEPTNO,
+       COUNT(*) AS "NUMBER OF PEOPLE",
+       DECODE(DEPTNO,
+              '10', '경리부',
+              '20', '인사부',
+              '30', '영업부',
+              '40', '전산부')
+              AS "DNAME",
+       DECODE(DEPTNO,
+              '10', '서울',              
+              '20', '인천',
+              '30', '용인',
+              '40', '수원')
+              AS "LOCATION",
+       ROUND(AVG(SAL))
+       AS SAL
+FROM EMP
+GROUP BY DEPTNO
+ORDER BY DEPTNO ASC;
+
+/* DATA DICTIONARY */
+-- 용어 사전은 사용자가 테이블을 생성하거나 사용자를 변경하는 등의 작업을 할 때
+-- DB 서버에 의해 자동으로 갱신되는 테이블로,
+-- 사용자는 데이터 딕셔너리의 내용을 직접 수행하거나 삭제할 수 없고,
+-- 사용자가 이해할 수 있는 데이터를 산출해 줄 수 있도록 하기 위해
+-- 읽기 전용 뷰 형태로 정보를 제공
+-- 용어 사전은 ENTITY, ATTRIBUTE의 이름의 의미를 설명해 놓은 사전을 의미
+
+-- USER_ 자신의 계정이 소유한 객체 등에 관한 정보 조회
+-- ALL_ 자신 계정 소유 또는 권한을 부여받은 객체 등에 관한 정보 조회
+-- DBA_ 데이터베이스 관리자만 접근 가능한 객체 등의 정보 조회
+
+SELECT OWNER, TABLE_NAME
+FROM ALL_TABLES;
+
+-- DBA나 시스템 권한을 가진 사용자만 접근 가능
+-- DBA 권한이 없으면 오류 발생
+SELECT OWNER, TABLE_NAME
+FROM DBA_TABLES;
+-- SCOTT_DB 에선 실행됨 
+/* SQLPLUS > GRANT SELECT ANY TABLE TO TESTER1;  권한 주면 실행 됨 */
+
+SELECT *
+FROM DBA_SYS_PRIVS;
+-- 이것도 SCOTT_DB 에선 실행됨
+/* SQLPLUS > GRANT SELECT ANY TABLE TO TESTER1;  권한 주면 실행 됨 */
+
+-- 권한에 대한 정보를 갖는 DICTIONARY
+-- DBA_ 데이터베이스 관리자만 접근 가능한 객체 등의 정보 조회
+
+-- 테이블 기술서 <<프로젝트 추가 서류입니다.>>
+-- 테이블 기술서는 개별 테이블에 대한 보다 자세한 문서화 수단이 됨
+-- 모델링 도구에 테이블에 대한 정보가 저장되어 있지만 테이블 하나하나에 대한 출력된 문서 필요
+
+-- 대표적인 시스템 권한
+-- CREATE SESSION : DB에 접속할 수 있는 권한
+-- CREATE TABLE : 테이블을 생성할 수 있는 권한
+-- CREATE ANY TABLE : 다른 USER의 이름으로 테이블을 생성할 수 있는 권한
+-- CREATE TABLESPACE : 테이블 스페이스를 만들 수 있는 권한
+-- UNLIMITED TABLESPACE : 사용량을 무제한으로 허용하는 권한
+-- SELECT ANY TABLE : 어느 테이블, 뷰라도 검색을 할 수 있는 권한
+-- CREATE USER : 새로운 사용자 생성
+-- CREATE VIEW : 사용자 스키마에서 뷰를 생성할 수 있는 권한
+-- CREATE SEQUENCE : 사용자 스키마에서 시퀀스를 생성할 수 있는 권한
+-- CREATE PROCEDURE : 사용자 스키마에서 함수를 생성할 수 있는 권한
+-- DROP USER : 사용자 삭제 권한
+-- DROP ANY TABLE : 임의의 테이블을 삭제할 수 있는 권한
+
+-- 이 외에도 상당히 많은 시스템 권한들이 있다.
+-- 권한 부여 명령 : GRANT
+-- 권한 회수 명령 : REVOKE
+
+-- <ROLE 생성>
+-- CREATE ROLE ROLE_NAME;
+
+-- <ROLE 권한 부여>
+-- GRANT 권한 TO ROLE_NAME;
+
+-- <권한이 부여된 ROLE을 유저에게 부여>
+-- GRANT ROLE_NAME TO USER1, USER2, ...
+
+-- CONNECT ROLE : 사용자가 접속하기 위해 가장 기본적인 권한 8가지를 묶어놓음
+-- RESOURCE ROLE : 사용자가 객체(테이블, 뷰, 인덱스)를 생성할 수 있도록 시스템 권한을 묶어 놓음
+-- DBA ROLE : 시스템 관리에 필요한 모든 권한을 부여할 수 있는 가장 강력한 권한
+
+/* STEREO TYPE */
+-- 설계 모델에 의미(또는 분류)를 부여하고 싶을 때 사용
+-- << 와 >> 사이에 스테레오명 정의. <<UL>>
+-- 클래스명뿐만 아니라 모든 요소에 적용 가능
+-- UML에서의 스테레오 타입이 이미 정의되어 있음
+-- 설계자가 임의로 지정할 수도 있음
+
+
+/* DDL(Data Definition Language) : CREATE, DROP, ALTER */
+
+    /* CREATE TABLE */
+-- CREATE TABLE table_name (
+--    column1 datatype,
+--    column2 datatype,
+--    column3 datatype,
+--    ....
+-- );
+
+    /* DROP TABLE */
+-- DROP TABLE table_name;
+-- 테이블을 삭제함. 복구가 불가능. 신중하게 해야함. CREATE 하기 전에 DROP을 해서 초기화 시킴.
+-- 삭제할 테이블의 기본 키나 고유 키를 다른 테이블에서 참조하고 있는 경우
+-- 삭제가 불가능하기 때문에, 그럴 경우 참조 중인 자식 테이블을 먼저 제거하여야 함.
+
+    /* TRUNCATE TABLE */
+-- TRUNCATE TABLE table_name;   
+-- 테이블 내의 내용은 모두 삭제되지만, 테이블 그 자체는 남게 함.
+
+    /* ALTER TABLE */
+-- ALTER TABLE table_name
+-- [ADD, DELETE, MODIFY] column_name datatype;
+-- ADD : COLUMN 추가, DELETE : COLUMN 삭제, MODIFY : COLUMN 수정
+
+-- 사원 정보를 저장하기 위한 테이블 생성
+DROP TABLE EMP01;
+
+CREATE TABLE EMP01(
+        ENO NUMBER(4),
+        ENAME VARCHAR2(14),
+        SAL NUMBER(7, 3)
+        );        
+
+DESC EMP01;
+
+SELECT *
+FROM EMP01;
+
+/* 사원 테이블에 날짜 타입을 가지는 BIRTH COLUMN 추가하기 */
+ALTER TABLE EMP01 
+ADD(BIRTH DATE);
+
+DESC EMP01;
+
+SELECT *
+FROM EMP01;
+
+/* 사원 이름 COLUMN 크기 변경하기 (30) */
+ALTER TABLE EMP01
+MODIFY ENAME VARCHAR2(30);
+
+DESC EMP01;
+
+SELECT *
+FROM EMP01;
+
+/* 사원 테이블에서 이름 COLUMN 제거하기 */
+ALTER TABLE EMP01
+DROP COLUMN ENAME; 
+--  : 2개 이상의 COLUMN이 존재하는 경우에 사용, 한 번에 하나의 COLUMN만 삭제 가능
+DESC EMP01;
+
+/* 사원 테이블에서 사원 번호 COLUMN 숨기기 */
+ALTER TABLE EMP01
+SET UNUSED (ENO);
+-- SET UNUSED는 시스템의 요구가 적을 때 COLUMN을 제거할 수 있도록 하나 이상의
+-- COLUMN을 UNUSED로 표시. 실제로는 테이블에서 해당 COLUMN이 제거되지는 않음
+DESC EMP01;
+
+/* 숨김된 COLUMN 일괄 삭제 */
+ALTER TABLE EMP01
+DROP UNUSED COLUMNS;
+-- DROP UNUSED COLUMNS는 테이블에서 현재 UNUSED로 표시된 모든 COLUMN을 삭제
+DESC EMP01;
+
+/* 테이블 명을 변경하는 RENAME */
+-- RENAME OLD_NAME TO NEW_NAME
+RENAME EMP01 TO EMP02;
+DESC EMP02;
+DESC EMP01;
+-- EMP01 객체가 존재하지 않습니다.
+
+DROP TABLE EMP02;
+DESC EMP02;
+-- EMP02 객체가 존재하지 않습니다.
+
+/* ROWNUM */
+-- 내장 함수는 아니지만 자주 사용되는 문법
+-- 오라클에서 내부적으로 생성되는 가상 COLUMN, SQL 조회 결과의 순번을 나타냄
+-- 자료를 일부분만 확인하여 처리할 때 유용
+SELECT ROWNUM "순번", EMPNO, ENAME, SAL
+FROM EMP
+WHERE ROWNUM <= 3;
+
+/* INSERT */
+-- INSERT INTO 테이블 이름 (열1, 열2, ...) 
+-- VALUE (값1, 값2 , ….) 
+   
+-- INSERT INTO 테이블 이름 ( 열1,열2,열3,열4 ….) 
+-- SELECT 테이블에 들어갈 값 
+-- FROM select값을 구하기 위한 테이블 
+-- WHERE 조건
+
+-- INTO 키워드와 함께 TUPLE을 삽입할 테이블의 이름과 속성의 이름을 나열
+-- 속성 리스트를 생략하면 테이블을 정의할 때 지정한 속성의 순서대로 값이 삽입
+-- VALUES 키워드와 함께 삽입할 속성 값들을 나열
+-- INTO 절의 속성 이름과 VALUES 절의 속성 값은 순서대로 일대일 대응되어야함
+
+---------------CREATE DEPT01---------------
+SELECT *
+FROM DEPT01;
+DROP DEPT01; -- 확인은 해야한다.
+
+CREATE TABLE DEPT01(
+        DEPTNO NUMBER(2),
+        DNAME VARCHAR2(14),
+        LOC VARCHAR2(13)
+        );
+DESC DEPT01;
+
+INSERT INTO DEPT01
+VALUES(10, '경리부', '서울');
+SELECT *
+FROM DEPT01;
+
+INSERT INTO DEPT01(DEPTNO, LOC, DNAME)
+VALUES(20, '인천', '인사부');
+SELECT *
+FROM DEPT01;
+
+INSERT INTO DEPT01
+VALUES(40, '전산부', NULL);
+SELECT *
+FROM DEPT01;
+
+INSERT INTO DEPT01
+VALUES(50, '기획부', ''); 
+-- DNAME 값 : NULL ('') -> ""는 안됨.
+SELECT *
+FROM DEPT01;
+
+
+---------------CREATE EMP02---------------
+DROP TABLE EMP02;
+CREATE TABLE EMP02(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10),
+        JOB VARCHAR2(9),
+        HIREDATE DATE,
+        DEPTNO NUMBER(2)
+        );
+DESC EMP02;
+
+INSERT INTO EMP02
+VALUES(1001, '김사랑', '사원', '2015/03/01', 20);
+SELECT *
+FROM EMP02;
+
+INSERT INTO EMP02
+VALUES(1002, 
+       '한예슬', 
+       '대리',
+TO_DATE('2014/05/01', 'YYYY, MM, DD'),
+       20
+       );
+SELECT *
+FROM EMP02;
+
+INSERT INTO EMP02
+VALUES(1003, '오지호', '과장', SYSDATE, 30);
+SELECT *
+FROM EMP02;
+
+/* 테이블의 내용을 수정하는 UPDATE */
+-- UPDATE table_name
+-- SET column1 = value1, column2 = value2, ...
+-- WHERE condition;
+
+/* 잘못 했을때 되돌리는 명령어 ROLLBACK */
+
+-- Q1) DEPT01 테이블에서 10번 부서의 생산부를 업데이트 해보자
+UPDATE DEPT01
+SET DNAME = '생산부'
+WHERE DEPTNO = '10';
+SELECT *
+FROM DEPT01;
+
+--> 20 인사부 인천 
+UPDATE DEPT01
+SET DNAME = '생산부2', 
+    LOC = '부산'
+WHERE DEPTNO = '20';
+--> 20 생산부2 부산
+SELECT *
+FROM DEPT01;
+
+COMMIT;
+
+-- Q2) 모든 DNAME을 '생산부3'으로 수정해보기
+UPDATE DEPT01
+SET DNAME = '생산부3';
+SELECT *
+FROM DEPT01;
+
+-- Q3) 다시 되돌리기
+ROLLBACK;
+
+SELECT *
+FROM DEPT01;
+
+COMMIT;
+
+/* DELETE */
+-- 테이블에 있는 기존 TUPLE을 삭제하는 명령
+-- DELETE
+-- FROM TABLE_NAME
+-- [WHERE <CONDITION>];
+
+-- WHERE 절을 생략하면 테이블에 있는 모든 TUPLE 삭제
+
+-- 10번 부서의 특정 TUPLE만 삭제하기
+DELETE DEPT01
+WHERE DEPTNO = '10';
+
+ROLLBACK;
+
+COMMIT;
+
+-- 20번 부서에 해당되는 인원 전원 삭제
+DELETE EMP02
+WHERE DEPTNO = '20';
+
+SELECT * 
+FROM EMP02;
+
+-- 테이블 생성하기
+DROP TABLE EMPLOYEE03;
+CREATE TABLE EMPLOYEE03(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(20),
+        JOB VARCHAR2(20),
+        SAL NUMBER(7, 3)
+        );
+DESC EMPLOYEE03;
+SELECT *
+FROM EMPLOYEE03;
+
+-- DATA 입력해보기
+INSERT 
+INTO EMPLOYEE03
+VALUES (1000, '한용운', '승려', 100);
+
+INSERT 
+INTO EMPLOYEE03
+VALUES (1000, '허준', '의관', 150);
+
+INSERT 
+INTO EMPLOYEE03
+VALUES (1000, '주시경', '국어학자', 250);
+
+INSERT 
+INTO EMPLOYEE03
+VALUES (1000, '계백', '', 250);
+
+INSERT 
+INTO EMPLOYEE03
+VALUES (1000, '선덕여왕', NULL, 200);
+
+SELECT *
+FROM EMPLOYEE03;
+
+COMMIT;
+
+-- Q) 급여가 200이 안되는 사원에게 50을 인상해주세요
+UPDATE EMPLOYEE03
+SET SAL = SAL + 50
+WHERE SAL < 200;
+
+SELECT *
+FROM EMPLOYEE03;
+
+ROLLBACK;
+COMMIT;
+
+-- Q) 직업이 NULL인 사람의 사원 정보를 삭제하세요
+DELETE EMPLOYEE03
+WHERE JOB IS NULL;
+
+SELECT *
+FROM EMPLOYEE03;
+
+---------------CREATE EMPLOYEE02---------------
+DESC EMPLOYEE02;
+CREATE TABLE EMPLOYEE02(
+       EMPLOYEE_ID NUMBER(10),
+       NAME VARCHAR2(20),
+       SALARY NUMBER(7, 2)
+       );
+
+-- EMPLOYEE02와 완전히 같은 테이블 생성하기
+CREATE TABLE EMPLOYEE2_1
+AS
+SELECT *
+FROM EMPLOYEE02;
+
+DESC EMPLOYEE2_1;
+
+-- 쓰레기 테이블 삭제, 정확하게는 휴지통 비우기
+-- 남은 명령어 테이블에 대한 정보를 지운다.
+PURGE RECYCLEBIN;
+
+DROP TABLE DEPT02;
+CREATE TABLE DEPT02
+AS
+SELECT *
+FROM DEPT
+WHERE 1 = 0;
+-- FALSE : DATA 내용 복사 안됨, 구조만 복사 됨
+
+DROP TABLE DEPT02;
+CREATE TABLE DEPT02
+AS
+SELECT *
+FROM DEPT
+WHERE 1 = 1;
+-- TRUE : DATA 내용도 복사됨
+
+SELECT *
+FROM DEPT02;
+
+----
+DESC EMPLOYEE02;
+ALTER TABLE EMPLOYEE02 
+ADD (
+    MANAGER_ID VARCHAR2(10)
+    );
+DESC EMPLOYEE02;
+
+ALTER TABLE EMPLOYEE02
+MODIFY (
+        MANAGER_ID VARCHAR2(20)
+        );
+DESC EMPLOYEE02;
+
+-- DELETE COLUMN
+ALTER TABLE EMPLOYEE02
+DROP COLUMN MANAGER_ID;
+
+DESC EMPLOYEE02;
+
+/* 문자형 데이터 */
+-- CHAR 고정길이 문자형 데이터
+-- VARCHAR 가변길이 문자형 데이터
+-- NCHAR 유니코드 고정길이 문자형 데이터
+-- NVARCHAR 유니코드 가변길이 문자형 데이터, LONG(2GB) 가변길이
