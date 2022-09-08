@@ -1,0 +1,435 @@
+---------------------------------------------------------09/08--------------------------------
+
+-- EMP01 테이블의 ENAME 칼럼에 제약조건을 NOT NULL로 변경
+ALTER TABLE EMP01
+MODIFY ENAME
+CONSTRAINT EMP01_ENAME_NN NOT NULL;
+
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP01');
+
+SELECT *
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP01';
+
+/* 제약 조건 제거하기 */
+
+-- ALTER TABLE [TABLE_NAME]
+-- DROP CONSTRAINT [CONSTRAINT_NAME];
+
+ALTER TABLE EMP01
+DROP CONSTRAINT EMP01_ENAME_NN;
+
+SELECT * 
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP01';
+-- 제약 조건이 제거되어 조회된 데이터가 없다
+
+-----------------------EMP11
+CREATE TABLE EMP11(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10) CONSTRAINT EMP11_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2),
+        CONSTRAINT EMP11_EMPNO_PK PRIMARY KEY(EMPNO),
+        CONSTRAINT EMP11_JOB_UK UNIQUE(JOB),
+        CONSTRAINT EMP11_DEPTNO_FK FOREIGN KEY(DEPTNO)
+                   REFERENCES DEPT01(DEPTNO)
+        );
+        
+SELECT CONSTRAINT_NAME,
+       CONSTRAINT_TYPE,
+       R_CONSTRAINT_NAME,
+       TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME IN('EMP11');
+
+INSERT
+INTO EMP11
+VALUES(1000, '허준', '사원', 10);
+
+INSERT
+INTO EMP11
+VALUES(1010, '홍길동', '사원', 50);
+-- ERROR : unique constraint (TESTER1.EMP11_JOB_UK) violated
+-- COLUMN:JOB = UNIQUE, 중복된 값을 허용하지 않는다
+
+SELECT *
+FROM EMP11;
+
+DELETE 
+FROM DEPT01
+WHERE DEPTNO = 10;
+-- ERROR : integrity constraint (TESTER1.EMP11_DEPTNO_FK) violated - child record found
+-- 참조하고 있는 자식 레코드들이 있기 때문에 바로 삭제가 되지 않는다.
+
+COMMIT;
+
+DELETE
+FROM EMP01
+WHERE DEPTNO = 10;      -- DEPT01의 DEPTNO 제약 조건을 참조하고 있는 자식 레코드 1 제거
+
+DELETE
+FROM EMP11
+WHERE DEPTNO = 10;      -- DEPT01의 DEPTNO 제약 조건을 참조하고 있는 자식 레코드 2 제거
+
+DELETE 
+FROM DEPT01
+WHERE DEPTNO = 10;      -- 비로소 부모의 제약 조건이 삭제가 된다.
+
+ROLLBACK;
+
+--------------------------------EMP12
+
+CREATE TABLE EMP12(
+        EMPNO NUMBER(4),
+        ENAME VARCHAR2(10) CONSTRAINT EMP12_ENAME_NN NOT NULL,
+        JOB VARCHAR2(9),
+        DEPTNO NUMBER(2),
+        CONSTRAINT EMP12_EMPNO_PK PRIMARY KEY(EMPNO),
+        CONSTRAINT EMP12_JOB_UK UNIQUE(JOB),
+        CONSTRAINT EMP12_DEPTNO_FK FOREIGN KEY(DEPTNO)
+                   REFERENCES DEPT01(DEPTNO)
+                   ON DELETE CASCADE        
+        );
+INSERT
+INTO EMP12
+VALUES(1000, '허준', '사원', 10);  
+
+DELETE
+FROM DEPT01
+WHERE DEPTNO = 10;
+-- ON DELETE CASCADE : 참조한 부모 테이블의 COLUMN 값이 삭제될 때 같이 삭제된다.
+
+COMMIT;
+
+ALTER TABLE EMP12
+DROP CONSTRAINT EMP12_DEPTNO_FK;
+-- 참조 키 제약 조건 삭제
+
+ALTER TABLE EMP12
+ADD CONSTRAINT EMP12_DEPTNO_FK
+FOREIGN KEY(DEPTNO)
+REFERENCES DEPT01(DEPTNO)
+ON DELETE CASCADE;
+-- CASCADE 옵션을 추가하여 제약 조건 추가
+
+SELECT * 
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP12';
+
+COMMIT;
+
+DROP TABLE EMP12 CASCADE CONSTRAINTS;
+-- 종속된 제약조건을 삭제
+
+SELECT *
+FROM USER_CONS_COLUMNS;
+WHERE TABLE_NAME = 'EMP12';
+
+ROLLBACK;
+
+-------------알아두면 간편한 것---------------------
+DROP TABLE EMP01 CASCADE CONSTRAINTS;
+-- 종속된 제약조건 삭제
+SELECT *
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME = 'EMP01';
+---------------------------------------------------
+
+/* JOIN */
+-- 둘 이상의 테이블을 연결하여 데이터를 검색하는 방법
+
+/* JOIN CONDITION */
+-- 여러 테이블에서 특정 열 선택
+-- WHERE 절 안에 두 테이블의 공통되는 COLUMN 비교
+-- 둘 이상의 테이블을 쿼리하여 결과 집합 생성
+-- 기본 키 및 외래 키를 JOIN 조건으로 사용
+-- 테이블을 JOIN하려면 지정한 테이블에서 공통적으로 사용하는 열 사용
+
+-- SQL에서는 두 개 이상의 테이블을 결합해야만 원하는 결과를 얻을 수 있을 때때
+-- 한 번의 질의로 원하는 결과를 얻을 수 있는 JOIN 기능을 제공
+
+-- CROSS JOIN
+-- : 특별한 키워드 없이 SELECT 문의 FROM 절에
+-- 사원(EMP) 테이블과 부서(DEPT) 테이블을 콤마(,)로 연결해서 연속으로 기술
+
+SELECT ENAME, DEPTNO
+FROM EMP 
+ORDER BY DEPTNO;
+
+SELECT DEPTNO, DNAME
+FROM DEPT;
+
+-- Q) 사원 테이블과 부서 테이블을 CROSS JOIN 해보기
+SELECT *
+FROM EMP, DEPT
+WHERE EMP.DEPTNO = DEPT.DEPTNO;
+
+/* TABLE JOIN */
+-- JOIN 조건
+-- 여러 결과 집합의 결합
+-- EQUI JOIN : 동일 COLUMN을 기준으로 JOIN
+-- NON-EQUI JOIN : 동일 COLUMN이 없이 다른 조건을 사용하여 JOIN
+-- SELF JOIN : 한 테이블 내에서 JOIN
+-- OUTER JOIN : JOIN 조건에 만족하지 않는 행도 나타냄
+
+
+/* TABLE ALIAS */
+-- 카티션 곱
+-- 테이블 이름에 별칭 사용
+-- 테이블 예명(ALIAS) - 테이블 ALIAS로 COLUMN을 단순, 명확히 할 수 있음
+-- 현재의 SELECT 문장에 대해서만 유효
+-- ALIAS는 길이가 30자까지 가능, 짧을 수록 더 좋음
+-- ALIAS는 의미가 있어야 함
+-- FROM 절에 테이블 ALIAS 설정 시 해당 테이블 ALIAS는 SELECT 문장에서 테이블 이름 대신에 사용해야 함.
+
+/* EQUI JOIN */
+-- EQUI JOIN은 가장 많이 사용하는 JOIN 방법
+-- JOIN 대상이 되는 두 테이블에서 공통으로 존재하는 COLUMN의 값이 일치되는
+-- 행을 연결하여 결과를 생성하는 JOIN 방법
+-- JOIN 대상 테이블에서 공통 COLUMN을 '=' 비교를 통해
+-- 같은 값을 가지는 행을 연결
+
+-- FORMAT
+-- SELECT TABLE1.COLUMN, TABLE2.COLUMN
+-- FROM TABLE1, TABLE2
+-- WHERE TABLE1.COLUMN = TABLE2.COLUMN;
+
+-- Q1) '이문세'인 사람의 정보만을 출력하는 이름과, 소속 부서명 출력
+-- EMP 테이블 사용한다면 EMP.ENAME, DEPT.DNAME, EMP.DEPTNO
+-- EQUI JOIN 방식을 사용하세요
+SELECT EMP.ENAME, DEPT.DNAME, EMP.DEPTNO
+FROM EMP, DEPT
+WHERE EMP.DEPTNO = DEPT.DEPTNO AND ENAME = '이문세';
+
+-- COLUMN 앞에 테이블 명시하기 --> COLUMN의 모호성 해결
+-- 테이블에 별칭 부여하기
+-- FROM EMP E, DEPT D
+
+SELECT E.ENAME, D.DNAME, E.EMPNO
+FROM EMP E, DEPT D
+WHERE E.DEPTNO = D.DEPTNO AND E.ENAME = '이문세';
+
+----------
+
+SELECT *
+FROM SALGRADE;
+
+SELECT ENAME, SAL, GRADE
+FROM EMP, SALGRADE
+WHERE SAL BETWEEN LOSAL AND HISAL
+ORDER BY GRADE;
+
+-- AS 사용 부서를 추가해서 JOIN
+
+SELECT E.ENAME, E.SAL, D.DNAME, S.GRADE
+FROM EMP E, SALGRADE S, DEPT D
+WHERE E.DEPTNO = D.DEPTNO AND E.SAL BETWEEN S.LOSAL AND S.HISAL
+ORDER BY GRADE;
+
+/* NON-EQUI JOIN */
+-- JOIN 조건에 특정 범위 내에 있는지를 조사하기 위해
+-- WHERE 절에 JOIN 조건을 = 연산자 이외의 비교 연산자 사용
+
+/* ANSI JOIN */
+-- SQL DEVELOPER 뿐만 아니라 현재 대부분의 상용 데이터베이스 시스템에서
+-- 표준 언어로 ANSI(미국 표준 연구소) SQL에서 제시한 표준 기능을
+-- 대부분 준수하고 있음
+-- ANSI 표준 SQL JOIN 구문은 몇 가지 새로운 키워드와 절을 제공하여,
+-- SELECT 문의 FROM 절에서 JOIN을 완벽하게 지정할 수 있음
+-- INNER JOIN, OUTER JOIN
+
+/* INNER JOIN */
+-- SELECT *
+-- FROM TABLE1 INNER JOIN TABLE2
+-- ON TABLE1.COLUMN = TABLE2.COLUMN;
+
+/* SELF JOIN */
+-- JOIN은 두 개 이상의 서로 다른 테이블을 서로 연결하는 것뿐만 아니라,
+-- 하나의 테이블 내에서 JOIN을 해야만 원하는 자료를 얻는 경우가 생김
+-- SELF JOIN이란 말 그대로 자기 자신과 JOIN을 맺는 것을 말함
+
+-- Q2) 특정 사원의 매니저가 누구인지 알아내기 AS "사원명" "직속상관명"
+-- 특정 사원의 매니저의 정보는 MGR에 등록
+SELECT EMPLOYEE.ENAME AS "사원명", MANAGER.ENAME AS "직속상관명"
+FROM EMP EMPLOYEE, EMP MANAGER
+WHERE EMPLOYEE.MGR = MANAGER.MGR;
+
+-- Q3) INNER JOIN으로 위에 것을 바꿔 해보기
+SELECT ENAME, DNAME
+FROM EMP INNER JOIN DEPT
+ON EMP.DEPTNO = DEPT.DEPTNO;
+
+-- Q4) Q1을 INNER JOIN 방식으로 해보기
+SELECT ENAME, DNAME, DEPT.DEPTNO
+FROM EMP INNER JOIN DEPT
+ON EMP.DEPTNO = DEPT.DEPTNO
+WHERE ENAME = '이문세';
+-- ERROR : column ambiguously defined(COLUMN이 불분명함)
+
+/* ANSI OUTER JOIN */
+-- OUTER JOIN에서는 FULL까지 지원하여 LEFT, RIGHT, FULL 3가지를 지원하고 있다.
+-- OUTER JOIN의 정의와 형식
+
+-- 1) OUTER JOIN의 정의
+-- JOIN할 한 쪽 테이블에 조인 조건을 만족하는 행이 없어도,
+-- 그 테이블에 NULL 행을 추가해서 결과 테이블에 포함시키는 연산
+
+-- 2) OUTER JOIN이 필요한 테이블 예
+-- 다음 두 테이블은 대응하는 정보가 부족하므로 원하는 결과에 따라서는 OUTER JOIN이 필요하다.
+
+-- 3) OUTER JOIN 연산자 + 
+-- OUTER JOIN 연산자인 '+'는 정보가 부족한 테이블에 NULL 행을 추가 시키기 위한 연산자
+
+-- 4) OUTER JOIN FORMAT
+-- SELECT *
+-- FROM TABLE1 [LEFT | FULL | RIGHT] OUTER JOIN TABLE2
+
+-- 5) 유의사항
+-- 반드시 JOIN할 한 쪽 테이블에만 OUTER JOIN 연산자를 지정해야 한다.
+
+-- 6) OUTER JOIN의 예
+--  (1) EMP 테이블에 NULL 행을 추가한 OUTER JOIN.
+--      모든 사원의 이름과 부서번호, 부서 이름을 부서 번호의 오름차순으로 출력하되, 아직 아무도 근무하지 않는 신설 부서의 부서 번호와 부서 이름도 출력한다.
+--  (2) DEPT 테이블에 NULL 행을 추가한 OUTER JOIN.
+--      모든 사원의 이름과 부서번호, 부서 이름을 부서 번호의 오름차순으로 출력하되, 아직 부서가 정해지지 않은 신입 사원의 이름도 출력한다.
+
+
+-- INNER JOIN : 테이블들의 관계가 일치하는 경우의 결과
+-- OUTER JOIN : 테이블들의 관계가 일치하는 것과 일치하지 않는 것 중 한 쪽의 테이블을 결과로 가짐
+-- LEFT OUTER JOIN : 왼쪽 테이블을 기준, 반대쪽에 데이터가 없다면 NULL을 채워 출력
+-- RIGHT OUTER JOIN : 반대
+
+/* LEFT OUTER JOIN : 오른쪽에 데이터가 없으면 NULL을 채워 출력함 */
+
+SELECT MEMBER.ENAME AS "사원명", MANAGER.ENAME AS "직속상관명"
+FROM EMP MEMBER LEFT OUTER JOIN EMP MANAGER
+ON MEMBER.MGR = MANAGER.EMPNO; 
+
+/* RIGHT OUTER JOIN : 왼쪽에 데이터가 없으면 NULL을 채워 출력함 */
+
+SELECT MEMBER.ENAME AS "사원명", MANAGER.ENAME AS "직속상관명"
+FROM EMP MEMBER RIGHT OUTER JOIN EMP MANAGER
+ON MEMBER.MGR = MANAGER.EMPNO;
+
+/* FULL OUTER JOIN : 양 쪽에 데이터가 없으면 NULL을 채워 출력함 */
+
+SELECT MEMBER.ENAME AS "사원명", MANAGER.ENAME AS "직속상관명"
+FROM EMP MEMBER FULL OUTER JOIN EMP MANAGER
+ON MEMBER.MGR = MANAGER.EMPNO;
+
+--------------------------------------------------------------------------------
+
+/* MAINQUERY와 SUBQUERY */
+
+            /* <SUBQUERY> */
+            
+--      내부 질의(내부 SELECT문, 중첩된 SELECT문)를 의미
+--      메인쿼리에서 사용할 값 리턴
+
+--      형식 : WHRER 절의 연산자 뒤에 괄호 안에 서브쿼리 기술
+--          SELECT 선택리스트1
+--          FROM 테이블이름1
+--          WHERE 표현식 OP
+--          (SELECT 선택리스트2
+--          FROM 테이블이름2)
+
+--      특징
+--          1. 서브쿼리는 메인쿼리가 실행되기 전에 한 번만 실행된다.
+--          2. 서브쿼리의 실행 결과는 메인쿼리를 완성하는데 사용된다.
+--          3. 서브쿼리는 SELECT문의 FROM절, WHERE절, HAVING절에서 사용할 수 있다.
+--          4. WHERE나 HAVING 절에 하나 이상의 서브쿼리를 논리 연산자인 AND나 OR로 연결하여 사용할 수 있다.
+
+--      서브쿼리 작성 규칙
+--          서브쿼리를 작성할 때는 반드시 아래 작성 규칙을 따라야 한다.
+--          서브쿼리는 괄호로 묶어서 기술해야 한다
+--          서브쿼리는 비교 연산자의 우측에 위치해야 한다.
+--          서브쿼리에 ORDER BY 절을 포함할 수 없다.
+--          단일 행 서브쿼리에는 단일 행 비교 연산자(>,=, >=, <, <=, <>)만 사용 가능하다.
+--          다중 행 서브쿼리에는 다중 행 비교 연산자(IN, ANY, ALL)만 사용 가능하다.
+--          SELECT 문의 FROM절, WHERE절, HAVING 절에서만 사용할 수 있다.
+
+--      서브쿼리 안에 서브쿼리가 들어갈수 있다 (네스팅이라 하며, 메모리가 허용하면 무제한 중첩이 가능하다)
+
+--      서브쿼리의 유형
+--          1) 단일 행 서브쿼리 : 내부 질의에서 단 하나의 행만 반환
+--          2) 다중 행 서브쿼리 : 내부 질의에서 하나 이상의 행 반환      다중행연산자를 사용하여 IN,ANY,SOME,ALL,EXIST 반대는 NOT EXISTS 사용가능함
+--          3) 다중 열 서브쿼리 : 내부 질의에서 하나 이상의 열 반환
+
+--      단일 행 서브쿼리와 다중 행 서브쿼리
+--          1. 단일 행 서브쿼리
+--          2. HAVING 절의 서브쿼리
+--          3. 서브쿼리의 오류
+--          4. 다중 행 서브쿼리
+
+--      (1) 단일 행 서브쿼리의 특징
+--          내부 질의에서 단 하나의 행만 리턴
+--          단일 행 서브쿼리를 포함하는 질의문에서는 단일 행 비교 연산자만(=,>,>=,<,<=,<>) 사용 가능하다.  
+--          서브쿼리의 SELECT 절에서 그룹 함수를 사용할 수 있다.
+--          단일 행 비교 연산자를 사용한다
+--          단일 행(Single Row) 서브 쿼리는 수행 결과가 오직 하나의 로우(행, row)만을 반환하는 서브 쿼리를 갖는 것을 말합니다.
+
+--      (2) 다중 행 서브쿼리의 특징
+--          내부 질의에서 하나 이상의 행을 리턴
+--          다중 행 서브쿼리를 포함하는 질의문에서는 다중 행 비교 연산자만 사용 가능
+--          서브쿼리의 SELECT문에서 그룹 함수를 사용 가능
+--          다중 행 서브쿼리는 서브쿼리에서 리턴되는 결과가 하나 이상의 행일 때 사용하는 서브쿼리이다
+--          다중 행 서브쿼리는 반드시 다중 행 연산자(MULTIPLE ROW OPERATOR)와 함께 사용해야 함
+
+--      (3) 다중 행 비교 연산자
+--          IN : 메인쿼리 비교 조건이 서브쿼리가 리턴한 목록의 어떤 값이 같은지 비교(결과 중 하나라도 일치하면 TRUE)
+--          ANY, SOME : 메인쿼리 비교 조건이 서브쿼리가 리턴한 목록의 각각의 값과 비교(결과와 하나 이상이 일치하면 TRUE)
+--          ALL : 메인쿼리 비교 조건이 서브쿼리가 리턴한 목록의 모든 값과 비교(결과와 모든 값이 일치하면 TRUE)
+--          EXIST : 메인쿼리 비교 조건이 서브쿼리가 리턴한 목록의 어떤 값과 같은지 비교(결과 중 값이 하나라도 존재하면 TRUE)
+
+--      (3) 다중 열 비교 방식
+--          PAIRWISE & NON-PAIRWISE
+--          PAIRWISE
+--              : 두 개 이상의 열이 쌍(PAIR)을 이루어 비교되는 것을 의미
+--              하나의 WHERE 절을 사용할 때 이런 비교 결과를 얻을 수 있다.
+--          NON-PAIRWISE
+--              : 각각의 열이 별개로 비교되는 것을 의미
+--              여러 개의 WHERE 절을 사용할 때 이런 비교 결과를 얻을 수 있다.
+
+--------------------------------------------------------------------------------
+
+-- Q) 이문세의 부서명 구하기 - SUBQUERY/단일 행 서브쿼리
+
+/* MAINQUERY */
+SELECT DNAME 
+FROM DEPT
+WHERE DEPTNO = 
+-- DEPT 테이블에서 DNAME을 검색할건데
+
+/* SUBQUERY */
+(SELECT DEPTNO
+FROM EMP
+WHERE ENAME = '이문세');
+-- EMP 테이블 내에 '이문세'라는 이름을 가진 사람의 DEPTNO의 DNAME을 검색해라.
+
+
+-- Q) 평균 급여보다 더 많은 급여를 받는 사람 출력하기 - SUBQUERY/단일 행 비교 연산자 사용
+
+SELECT ENAME, SAL
+FROM EMP
+WHERE SAL > 
+(SELECT AVG(SAL)
+FROM EMP);
+
+-- Q) 급여가 500을 초과하는 사원의 부서 번호 출력 - 이건 서브쿼리 문제가 아닌데 왜 낸지 모르겠음
+
+SELECT DISTINCT DEPTNO
+FROM EMP
+WHERE SAL > 500;
+
+-- Q) 급여는 30번 부서의 어떤 사원과 같고, 업무는 20번 부서의 어떤 사원과 같은 모든 사원을 검색한다.
+
+
+            /* <MAINQUERY> */
+--      외부 질의를 의미
+--      서브쿼리가 리턴한 값을 이용해서 메인쿼리가 완성
