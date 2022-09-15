@@ -1,0 +1,172 @@
+--------------------------------------09/15-------------------------------------
+
+/* TRIGGER : 어떤 조건에 맞는 이벤트가 일어나면 후속 이벤트를 발생시킴 */
+
+-- 오라클에서 트리거 역시 해당 단어의 의미처럼 어떤 이벤트가 발생하면 자동적으로
+-- 방아쇠가 당겨져 총알이 발사되듯이 특정 테이블이 변경되면 이를 이벤트로
+-- 다른 테이블이 자동 변경되도록 하기 위해서 사용합니다
+-- INSERT, UPDATE, DELETE 문이 TABLE에 대해 행해질 때 묵시적으로 수행되는 PROCEDURE
+-- 트리거는 TABLE과는 별도로 DATABASE에 저장된다
+
+-- 트리거는 뷰에 대해서가 아니라 TABLE에 관해서만 정의될 수 있다.
+-- 행 트리거 : COLUMN의 각각의 행의 데이터 행 변화가 생길 때마다 실행되며,
+--            그 데이터 행의 실제값을 제어할 수 있다
+-- 문장 트리거 : 트리거 사건에 의해 단 한 번 실행되며, COLUMN의 각 데이터 행을 제어할 수 없다.
+
+-- 트리거의 타이밍
+-- BEFORE : INSERT, UPDATE, DELETE문이 실행되기 전에 트리거가 실행된다.
+-- AFTER : INSERT, UPDATE, DELETE문이 실행된 후 트리거가 실행된다.
+-- TRIGGER_EVENT : INSERT, UPDATE, DELETE 중에서 한 개 이상 올 수 있다.
+-- FOR EACH ROW : 이 옵션이 있으면 행 트리거가 된다.
+
+-- 트리거의 5가지 요소
+-- 1) 트리거 유형 : DML 단위의 트리거, 변경된 레코드 단위의 트리거
+-- 2) 트리거 동작 시점 : 트리거 동작 시점은 BEFORE, AFTER
+-- 3) 트리거 이벤트 : 트리거를 발생시킬 것인지 결정
+-- 4) 트리거 조건 : 레코드 단위의 트리거에서만 설정할 수 있는 UPDATE 작업 시 특정 조건을
+--               명시하여 조건에 맞는 레코드의 변경에서만 트리거 이벤트를 발생
+-- 5) 트리거 몸체 : BEGIN - END 절로 동작 정의
+
+-- 트리거 형식
+-- CREATE [OR REPLACE] TRIGGER 'TRIGGER_NAME'
+-- [BEFORE, AFTER] [INSERT, UPDATE, DELETE] ON 'TABLE_NAME'
+-- [FOR EACH ROW]
+-- [WHEN CONDITION]
+-- BEGIN
+-- ///////
+-- END;
+--------------------------------------------------------------------------------
+SET SERVEROUTPUT ON;
+DROP TABLE SAMPLE_DEPT;
+
+CREATE TABLE SAMPLE_DEPT (
+        DEPT_ID NUMBER,
+        DEPT_NAME VARCHAR2(15),
+        LOC VARCHAR2(10)
+        );
+DESC SAMPLE_DEPT;
+
+-- AFTER : INSERT, UPDATE, DELETE 문이 실행된 후 트리거가 실행된다.
+
+CREATE OR REPLACE TRIGGER PRINT_MSG
+AFTER INSERT ON SAMPLE_DEPT
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('부서가 추가되었습니다.');
+END;
+/ 
+-- TRIGGER PRINT_MSG가 컴파일 되었습니다.
+
+INSERT 
+INTO SAMPLE_DEPT
+VALUES(10, '마케팅부', '서울');
+
+INSERT
+INTO SAMPLE_DEPT
+VALUES(20, '홍보부', '인천');
+
+SELECT *
+FROM SAMPLE_DEPT;
+
+--------------------------------------------------------------------------------
+CREATE TABLE ITEM(
+        CODE CHAR(6) PRIMARY KEY, -- 물품 코드
+        NAME VARCHAR2(15) NOT NULL,
+        COMPANY VARCHAR2(15),
+        PRICE NUMBER(8),
+        CNT NUMBER DEFAULT 0 -- 재고 수량
+        );
+DESC ITEM;
+SELECT *
+from item;
+
+CREATE TABLE WAREHOUSE(
+        NUM NUMBER(6) PRIMARY KEY, -- 입고 번호
+        CODE CHAR(6) REFERENCES ITEM(CODE),
+        INTDATE DATE DEFAULT SYSDATE, -- 입고 날짜
+        INCNT NUMBER(6),
+        INPRICE NUMBER(6), -- 단가
+        TOTAL_PRICE NUMBER(8) -- 총액
+        );
+DESC WAREHOUSE;
+
+SELECT *
+FROM WAREHOUSE;
+--------------------------------------------------------------------------------
+SELECT *
+FROM USER_TRIGGERS;
+-- 현재 계정의 트리거를 조회
+
+INSERT
+INTO ITEM (CODE, NAME, COMPANY, PRICE)
+VALUES ('C0001', '에어컨', '삼성', 1000000);
+
+DELETE FROM ITEM
+WHERE COMPANY = 'LG';
+
+INSERT
+INTO ITEM (CODE, NAME, COMPANY, PRICE)
+VALUES ('C0002', '선풍기', 'LG', 50000);
+
+DROP TRIGGER CNT_ADD;
+DROP TRIGGER PRINT_MSG;
+
+CREATE OR REPLACE TRIGGER CNT_ADD   
+AFTER INSERT ON WAREHOUSE
+FOR EACH ROW
+BEGIN
+    UPDATE ITEM
+    SET CNT = CNT +:NEW.INCNT
+    -- 바인딩 변수, NEW 선언문, COLUMN_CNT에 INSERT로 삽입한 데이터를 더해서(NEW.INCNT) 설정
+    -- ** :NEW (콜론/NEW 절대 띄어쓰면 안됨) **
+    WHERE CODE =:NEW.CODE;
+END;
+/
+
+INSERT
+INTO WAREHOUSE(NUM, CODE, INCNT, INPRICE, TOTAL_PRICE)
+VALUES(1, 'C0001', 10, 900000, 9000000);
+
+DROP TRIGGER CNT_SUB;
+
+CREATE OR REPLACE TRIGGER CNT_SUB
+AFTER DELETE ON WAREHOUSE
+FOR EACH ROW
+BEGIN
+    UPDATE ITEM
+    SET CNT = CNT -:OLD.INCNT
+    WHERE CODE =:OLD.CODE;
+END;
+/
+
+DELETE FROM WAREHOUSE WHERE CODE = 'C0001';
+SELECT *
+FROM WAREHOUSE;
+
+CREATE OR REPLACE TRIGGER CNT_UPDATE
+AFTER UPDATE ON WAREHOUSE
+FOR EACH ROW
+BEGIN
+    UPDATE ITEM
+    SET CNT = CNT +:OLD.INCNT +:NEW.INCNT
+    WHERE CODE =:NEW.CODE;
+END;
+/
+
+UPDATE WAREHOUSE
+SET INCNT = 7, INPRICE = 800000
+WHERE CODE = 'C0001';
+
+SELECT *
+FROM WAREHOUSE;
+
+-- Q) 0개의 행이 UPDATE / WHY? // 새로운 데이터 추가 해보기
+-- A) 애초에 C0001 행은 삭제되어 있는 상태 / UPDATE 할 수 없다.
+
+INSERT
+INTO WAREHOUSE(NUM, CODE, INCNT, INPRICE, TOTAL_PRICE)
+VALUES(2, 'C0002', 20, 700000, 7800000);
+-- 새로운 데이터 추가
+
+UPDATE WAREHOUSE
+SET INCNT = 7, INPRICE = 800000
+WHERE CODE = 'C0002';
