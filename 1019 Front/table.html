@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>table Tag</title>
+  </head>
+  <body>
+    <div>Table Tag</div>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>과일명</th>
+          <th>수량</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td rowspan="2">사과<br />키위</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <!-- <td>키위</td> -->
+          <td>5</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <td colspan="2">총 수량</td>
+        <!-- <td></td> -->
+        <td>15</td>
+      </tfoot>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>formEx03</title>
+  </head>
+  <body>
+    <div>HTML5에서 추가된 type</div>
+    <form action="test.html">
+      <fieldset>
+        <legend>HTML Form</legend>
+        <div>
+          <label for="userName">이름 : </label>
+          <input
+            type="text"
+            name="userName"
+            id="userName"
+            placeholder="Enter your Name"
+            autofocus
+            autocomplete="off"
+            required
+          />
+          <!-- required : 이 칸 안 적으면 못 넘어감.(필수 항목) -->
+        </div>
+        <div>
+          <label for="userEmail">이메일 : </label>
+          <input
+            type="email"
+            name="userEmail"
+            id="userEmail"
+            placeholder="example@abc.com"
+            autocomplete="off"
+          />
+        </div>
+        <div>
+          <label for="userUrl">웹사이트 : </label>
+          <input
+            type="url"
+            name="userUrl"
+            id="userUrl"
+            placeholder="Enter your Web Site URL"
+            autocomplete="off"
+          />
+        </div>
+        <div>
+          <label for="order">주문 수량 : </label>
+          <input
+            type="number"
+            name="order"
+            id="order"
+            max="100"
+            min="0"
+            value="5"
+          />
+        </div>
+        <div>
+          <label for="userDate">제출일 : </label>
+          <input type="date" name="userDate" id="userDate" value="2022-10-31" />
+        </div>
+        <div>
+          <label for="userColor">색 선택 :</label>
+          <input type="color" name="userColor" id="userColor" value="#ff0000" />
+        </div>
+      </fieldset>
+      <input type="submit" value="가입하기" />
+      <input type="reset" value="취소" />
+    </form>
+  </body>
+</html>

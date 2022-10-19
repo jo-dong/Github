@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>formEx01</title>
+  </head>
+  <body>
+    <div>form Tag</div>
+    <form action="test.html" method="get">
+      <!-- method : get, post -->
+      <!-- ID/PW 같은 작업(중요)은 post, 검색 기능(중요X)은 get -->
+      <!-- action : 작업 요청 -->
+      <div>
+        <label for="userId"> 아이디 : </label>
+        <input
+          type="text"
+          id="userId"
+          name="userId"
+          placeholder="Enter your ID"
+        />
+      </div>
+      <!-- userId : key / 보통 id, name은 동일하게 작성 -->
+      <!-- 127.0.0.1:5500/p221019/test.html?userId=abcd
+                  ip:port/folderName/fileName?key=value&key=value
+              : get 방식
+           name(key), value(value) : 서버로 보내지는 속성
+      -->
+      <div>
+        <label for="userPw">패스워드 : </label>
+        <input type="password" name="userPw" id="userPw" placeholder="●●●●" />
+      </div>
+
+      <!-- radio 버튼의 name을 똑같이 작성하면 1개만 선택된다. -->
+      <div>
+        <span for="">성별 : </span>
+        <input type="radio" name="gender" id="male" value="male" />
+        <label for="male">남</label>
+        <!-- id = for : 텍스트를 눌러도 라디오 박스가 체크됨 -->
+        <input type="radio" name="gender" id="female" value="female" />
+        <label for="female">여</label>
+      </div>
+
+      <div>
+        <span>취미 : </span>
+        <label
+          >독서
+          <input type="checkbox" name="hobby1" value="reading" id="" checked />
+        </label>
+        <!-- '독서'라는 Text를 클릭해도 체크박스가 체크 됨
+             laber for="" : for 속성을 삭제해야 가능 -->
+        <label>영화 감상 </label>
+        <input type="checkbox" name="hobby2" value="movie" id="" />
+      </div>
+
+      <input type="submit" value="login" />
+    </form>
+  </body>
+</html>
