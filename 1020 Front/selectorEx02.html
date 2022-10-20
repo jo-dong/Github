@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 
+        Tag[Property]
+        Tag[Property="Value"]
+        =     완전 일치
+        ^=    시작하는
+        $=    끝나는
+        *=    일부 단어 일치(단어가 있기만 하면 됨)
+        ~=    일부 단어 일치(단어가 공백으로 나뉘어져있어야 함)
+      */
+      a[href^="https"] {
+        background-color: plum;
+        color: #fff;
+      }
+      a[href*="help"] {
+        background-color: #000;
+        color: #ff0;
+      }
+      a[href$=".com"] {
+        color: #0f0;
+      }
+      li[title~="ipsum"] {
+        color: magenta;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li><a href="https://www.daum.net">daum</a></li>
+      <li><a href="https://www.naver.com">naver</a></li>
+      <li><a href="mailto:help@host.co.kr">help</a></li>
+      <li title="lorem ipsum">Lorem ipsum dolor sit amet.</li>
+      <li title="lorem">Lorem ipsum dolor sit amet.</li>
+    </ul>
+  </body>
+</html>

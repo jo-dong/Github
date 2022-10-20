@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selectorQuiz</title>
+    <style>
+      #header h1 em {
+        background-color: orange;
+      }
+      #header div > p {
+        border: 3px solid black;
+      }
+      #header div p + p {
+        background-color: #ff0;
+      }
+      #content p#lead {
+        background-color: lime;
+      }
+      #content p.lead {
+        color: red;
+      }
+      #content ol + p {
+        /* ol + p : ol 바로 뒤에 있는 p에 스타일 적용
+          (ol에는 스타일 적용 X) */
+        background-color: lightblue;
+      }
+      #content ol ~ p {
+        /* ol ~ p : ol 뒤에 있는 모든 p에 스타일 적용
+          (ol에는 스타일 적용 X) */
+        color: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="header">
+        <h1>CSS <em>selector</em></h1>
+        <div>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur,
+            officiis consectetur aliquid reprehenderit iste distinctio, nobis
+            laborum repudiandae, ducimus quia ipsa tempore facere minima
+            repellat odio corrupti commodi libero dolore.
+          </p>
+          <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+      </div>
+      <div id="content">
+        <p id="lead">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum,
+          officiis!
+        </p>
+        <p class="lead">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum,
+          officiis!
+        </p>
+        <p class="lead">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum,
+          officiis!
+        </p>
+        <ol class="list lead">
+          <!-- 두 개 이상의 class를 적용할 때는 띄어쓰기
+          ol.list, ol.lead -->
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+        </ol>
+        <p>
+          One Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora,
+          eius?
+        </p>
+        <p>
+          Two Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora,
+          eius?
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

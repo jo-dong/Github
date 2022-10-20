@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selectorEx01</title>
+    <style>
+      span {
+        color: #f00;
+      }
+      span {
+        color: #00f;
+      }
+      /* 같은 선택자에 같은 속성, 다른 밸류를 
+      입력하면 우선순위가 높은 것만 적용(default : 위에서 아래) */
+      div > span {
+        /* div > span : (>)div의 자식으로 있는 span에 적용 */
+        color: #999;
+      }
+      #ex_css span {
+        /* #ex_css span : (공백)id=ex_css의 자식으로 있는 모든 span에 적용 */
+        background-color: #ff0;
+      }
+      .second_tag span {
+        background-color: aqua;
+      }
+      h1,
+      h2 {
+        border-style: solid;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ex_css">
+      <h1>첫 번째 h1</h1>
+      <div class="first_tag">
+        <span>span tag1</span>
+        <p>
+          <span>span tag2</span>
+        </p>
+      </div>
+      <span>span tag3</span>
+    </div>
+    <!--  -->
+    <div class="second_tag">
+      <h2>첫 번째 h2</h2>
+      <span>span tag4</span>
+    </div>
+    <!--  -->
+    <span>span tag5</span>
+  </body>
+</html>

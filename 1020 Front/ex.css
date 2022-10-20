@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* charset : 온다면 반드시 첫째 줄에 와야함(주석에 사용하는 한글 때문) */
+
+/* 
+[CSS 지정 방법]
+  1. inline style : 태그 내 속성
+  2. internal style : head 태그 내 style 태그
+  3. external style : 외부 파일
+
+[Selector] 선택자
+  1. tag
+  2. id
+  3. class
+
+  [CSS Syntax] 문법
+    : A CSS rule consists of a selector and a declaration block.
+    h1 { color:blue; font-size:12px; }
+    (h1 : selector, color : Property, blue : Value)(color:blue; ==> Declaration(선언))
+  */  
+
+h2 {
+  color: #f00;
+}
