@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table Style</title>
+    <style>
+      .tbl {
+        /* table.tbl에 border 설정 하지 않는다 */
+        /* 
+        [cell 사이 여백]
+        - double border, separate border
+        - separate | collapse
+        */
+        border-collapse: collapse;
+        width: 800px;
+      }
+      .tbl caption {
+        display: none;
+      }
+      .tbl th,
+      .tbl td {
+        border: 1px solid #000;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="tbl">
+      <caption>
+        table caption
+      </caption>
+      <thead>
+        <tr>
+          <th>table header cell-1</th>
+          <th>table header cell-2</th>
+          <th>table header cell-3</th>
+          <th>table header cell-4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>table data cell-1</td>
+          <td>table data cell-2</td>
+          <td>table data cell-3</td>
+          <td>table data cell-4</td>
+        </tr>
+        <tr>
+          <td>table data cell-1</td>
+          <td>table data cell-2</td>
+          <td>table data cell-3</td>
+          <td>table data cell-4</td>
+        </tr>
+        <tr>
+          <td>table data cell-1</td>
+          <td>table data cell-2</td>
+          <td>table data cell-3</td>
+          <td>table data cell-4</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        width: 400px;
+        height: 350px;
+        padding: 20px;
+        margin: 30px;
+        border: 3px solid #00f;
+        background: url(../img/whale.jpg) no-repeat center center;
+      }
+      .box2 {
+        /* 
+        [배경 이미지 크기]
+        * 가로 세로 꽉 차게 : 100% 100% (비율 깨짐)
+        * 가로는 꽉 차고 사진 비율 살리기 : 100% auto
+        * 세로는 꽉 채우고 사진 비율 살리기 : auto 100%
+        * 영역 안에 이미지가 완전히 들어옴(비율 살림) : contain
+        * 영역 안에 여백을 없애며 이미지가 들어옴(비율 살림, 이미지 잘림) : cover
+        * px로 직접 설정도 가능 ex)background-size: 300px 100px;
+        */
+        background-size: 100% 100%;
+      }
+      .auto {
+        background-size: 100% auto;
+      }
+      .contain {
+        background-size: contain;
+      }
+      .cover {
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere quas,
+      molestias consequatur, blanditiis nam incidunt dolorum magnam quibusdam
+      debitis mollitia, alias nemo perspiciatis? Delectus quod iusto omnis, ipsa
+      sequi voluptatum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      Facere quas, molestias consequatur, blanditiis nam incidunt dolorum magnam
+      quibusdam debitis mollitia, alias nemo perspiciatis? Delectus quod iusto
+      omnis, ipsa sequi voluptatum? Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Facere quas, molestias consequatur, blanditiis nam
+      incidunt dolorum magnam quibusdam debitis mollitia, alias nemo
+      perspiciatis? Delectus quod iusto omnis, ipsa sequi voluptatum?
+    </div>
+    <div class="box box2">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere quas,
+      molestias consequatur, blanditiis nam incidunt dolorum magnam quibusdam
+      debitis mollitia, alias nemo perspiciatis? Delectus quod iusto omnis, ipsa
+      sequi voluptatum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      Facere quas, molestias consequatur, blanditiis nam incidunt dolorum magnam
+      quibusdam debitis mollitia, alias nemo perspiciatis? Delectus quod iusto
+      omnis, ipsa sequi voluptatum? Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Facere quas, molestias consequatur, blanditiis nam
+      incidunt dolorum magnam quibusdam debitis mollitia, alias nemo
+      perspiciatis? Delectus quod iusto omnis, ipsa sequi voluptatum?
+    </div>
+    <div class="box auto">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere quas,
+      molestias consequatur, blanditiis nam incidunt dolorum magnam quibusdam
+      debitis mollitia, alias nemo perspiciatis? Delectus quod iusto omnis, ipsa
+      sequi voluptatum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      Facere quas, molestias consequatur, blanditiis nam incidunt dolorum magnam
+      quibusdam debitis mollitia, alias nemo perspiciatis? Delectus quod iusto
+      omnis, ipsa sequi voluptatum? Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Facere quas, molestias consequatur, blanditiis nam
+      incidunt dolorum magnam quibusdam debitis mollitia, alias nemo
+      perspiciatis? Delectus quod iusto omnis, ipsa sequi voluptatum?
+    </div>
+    <div class="box contain">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere quas,
+      molestias consequatur, blanditiis nam incidunt dolorum magnam quibusdam
+      debitis mollitia, alias nemo perspiciatis? Delectus quod iusto omnis, ipsa
+      sequi voluptatum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      Facere quas, molestias consequatur, blanditiis nam incidunt dolorum magnam
+      quibusdam debitis mollitia, alias nemo perspiciatis? Delectus quod iusto
+      omnis, ipsa sequi voluptatum? Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Facere quas, molestias consequatur, blanditiis nam
+      incidunt dolorum magnam quibusdam debitis mollitia, alias nemo
+      perspiciatis? Delectus quod iusto omnis, ipsa sequi voluptatum?
+    </div>
+    <div class="box cover">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere quas,
+      molestias consequatur, blanditiis nam incidunt dolorum magnam quibusdam
+      debitis mollitia, alias nemo perspiciatis? Delectus quod iusto omnis, ipsa
+      sequi voluptatum? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      Facere quas, molestias consequatur, blanditiis nam incidunt dolorum magnam
+      quibusdam debitis mollitia, alias nemo perspiciatis? Delectus quod iusto
+      omnis, ipsa sequi voluptatum? Lorem ipsum dolor sit amet consectetur
+      adipisicing elit. Facere quas, molestias consequatur, blanditiis nam
+      incidunt dolorum magnam quibusdam debitis mollitia, alias nemo
+      perspiciatis? Delectus quod iusto omnis, ipsa sequi voluptatum?
+    </div>
+  </body>
+</html>

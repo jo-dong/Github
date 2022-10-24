@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>background Image</title>
+    <style>
+      .box {
+        border: 5px double #00f;
+        padding: 20px;
+        background-color: #ff0;
+        width: 2000px;
+        height: 4000px;
+        background-image: url(../img/whale.jpg);
+
+        /* repeat | no-repeat | repeat-x(x축 방향으로만 반복) | repeat-y */
+        background-repeat: no-repeat;
+
+        /* 
+        [위치 지정]
+        * 가로 x 세로 : 이름
+          left/center/right x top/center/bottom
+          ex) background-position: center center;
+
+        * 가로(오른쪽이 +) x 세로(아래쪽이 +) : %
+          left top : 0 0 (0은 단위 안 씀)
+          center center : 50% 50%
+          right bottom : 100% 100%
+          ex) background-position: 50% 50%;
+
+        * 가로 x 세로 : px
+          left top : 0 0
+          ex) background-position: 5px 15px;
+          
+        */
+        background-position: center center;
+
+        /* scroll 내려도 이미지 고정 */
+        background-attachment: fixed;
+
+        /* shorthand */
+        /* background: #0f0 url(../img/whale.jpg) fixed no-repeat center center; */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis,
+      aliquam, odio enim accusantium natus, autem maiores praesentium et quia
+      adipisci assumenda ut nisi consequatur omnis reprehenderit fugiat.
+      Tempore, nulla minima.
+    </div>
+  </body>
+</html>

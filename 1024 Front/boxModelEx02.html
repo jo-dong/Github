@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        border: 3px solid #000;
+        margin: 30px 0;
+        /* element 사이의 margin은 겹침
+            : box 사이의 margin != 60px */
+        background-color: #ff0;
+        padding: 20px;
+      }
+      .box2 {
+        margin: 50px 0;
+        /* margin : 50px만 적용 (!= 80px) */
+      }
+      .box3 {
+        width: 600px;
+      }
+      .box4 {
+        box-sizing: border-box;
+        /* border + padding + content = 600px */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur
+      suscipit obcaecati debitis earum sunt, corporis autem vel rerum sit eius
+      repellendus pariatur! Fuga nulla, consequuntur voluptatem eum quas
+      voluptates hic.
+    </div>
+    <div class="box box2">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur
+      suscipit obcaecati debitis earum sunt, corporis autem vel rerum sit eius
+      repellendus pariatur! Fuga nulla, consequuntur voluptatem eum quas
+      voluptates hic.
+    </div>
+    <div class="box box3">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur
+      suscipit obcaecati debitis earum sunt, corporis autem vel rerum sit eius
+      repellendus pariatur! Fuga nulla, consequuntur voluptatem eum quas
+      voluptates hic.
+    </div>
+    <div class="box box3 box4">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur
+      suscipit obcaecati debitis earum sunt, corporis autem vel rerum sit eius
+      repellendus pariatur! Fuga nulla, consequuntur voluptatem eum quas
+      voluptates hic.
+    </div>
+  </body>
+</html>

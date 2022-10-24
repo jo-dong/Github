@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>float 해제</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      img {
+        vertical-align: top;
+        /* => 이미지의 여백 제거 */
+      }
+      #wrap {
+        width: 800px;
+        background-color: #ff0;
+        margin: 0 auto;
+      }
+      #wrap .img_list {
+        background-color: #f00;
+        /* overflow: hidden; */
+      }
+      /* [방법 2] */
+      /* 부모 태그에 overflow: hidden; */
+
+      /* float을 썼으면 반드시 clear로 흐름을 끊어줘야함 */
+      /* float이 적용된 content의 부모에서 끊어준다. */
+
+      /* [방법 1](권장) */
+      #wrap .img_list::after {
+        content: "float 흐름 끊기";
+        display: block;
+        /* display: block => 정해진 약속 그냥 무조건 block */
+        clear: left;
+        /* float: left면 clear: left, right면 right, 
+        둘 다 있으면 clear: both; */
+      }
+
+      #wrap .img_list .thumb {
+        float: left;
+        border: 0.5px solid #000;
+      }
+      /* [방법 3](권장 X) */
+      /* #wrap .append {
+        clear: left;
+      } */
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <h1>example</h1>
+      <div class="img_list">
+        <div class="thumb">
+          <img src="https://via.placeholder.com/100?text=A" alt="test" />
+        </div>
+        <div class="thumb">
+          <img src="https://via.placeholder.com/100?text=B" alt="test" />
+        </div>
+        <div class="thumb">
+          <img src="https://via.placeholder.com/100?text=C" alt="test" />
+        </div>
+        <div class="thumb">
+          <img src="https://via.placeholder.com/100?text=D" alt="test" />
+        </div>
+      </div>
+      <div class="append">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet accusamus
+        mollitia vero iste magnam reiciendis debitis alias nemo enim
+        reprehenderit? Sit provident officia vitae facilis! Excepturi, deserunt.
+        Laborum, ex necessitatibus!
+      </div>
+    </div>
+  </body>
+</html>
