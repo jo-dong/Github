@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>가상 클래스</title>
+  <style>
+    /* -------css2------- */
+    /* 부모의 첫번째 자식 */
+    li:first-child{}     /* 부모가 누구든 첫번째 li 자식 */
+    ul>li:first-child {} /* 부모가 ul인 자식 중 첫번째 자식 */
+
+    ul>li:first-child {
+      background-color: #ff0;
+    }
+    ul>li:last-child {
+      background-color: #ff0;
+    }
+    /* -------css3------- */
+    /* 부모의 첫번째 자식 */
+    li:first-of-type {}     /* 부모가 누구든 첫번째 li */
+    ul>li:first-of-type {}  /* 부모가 ul인 자식 중 첫번째 li */
+    
+    ul>li:first-of-type {
+      background-color: skyblue;
+    }
+    ul>li:last-of-type {
+      color: #f00;
+    }
+    /* 몇 번째 자식 */
+    ul>li:nth-of-type(2) {
+      background-color: gold;
+    }
+    ol>li:nth-of-type(2n+1) {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <ul>
+    <ol>
+      <li>추가된 리스트</li>
+    </ol>
+    <li>첫번째</li>
+    <li>두번째</li>
+    <li>세번째</li>
+  </ul>  
+  <ol>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ol>
+</body>
+</html>

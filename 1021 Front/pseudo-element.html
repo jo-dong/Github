@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>가상 엘리먼트</title>
+    <style>
+      /* before, after : 플롯 해제 */
+      h1::before {
+        /* content 속성 : 텍스트 */
+        content: "BEFORE";
+        color: #f00;
+      }
+      h1::after {
+        content: "AFTER";
+        color: #00f;
+      }
+      p::first-line {
+        color: #f00;
+      }
+      p::first-letter {
+        font-size: 2em;
+        font-weight: bold;
+        background-color: #ff0;
+      }
+      div::selection {
+        background-color: #eee;
+        color: #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>가상 엘리먼트</h1>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, qui.
+      Accusamus possimus tenetur nemo. Commodi aliquam, fugiat atque explicabo
+      debitis repellendus! Obcaecati quibusdam illo illum amet magni officia
+      fugiat blanditiis?
+    </p>
+    <div>
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Amet
+      voluptatibus quo quia eveniet quasi autem odit laudantium. Praesentium
+      omnis fugiat perferendis corrupti! Animi ad molestias, nisi totam placeat
+      non impedit.
+    </div>
+  </body>
+</html>

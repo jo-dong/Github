@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리스트 속성</title>
+  <style>
+    .list {
+      /* bullet 블릿 제거 */
+      /* list-style: none; */
+
+      /* bullet 블릿 위치 */
+      /* inside | outside */
+      list-style-position: outside;
+
+      /* disc | circle | square */
+      /* decimal | upper-alpha */
+      list-style-type: hangul-consonant;
+    }
+
+    .list li {
+      background-color: #ff0;
+    }
+  </style>
+</head>
+
+<body>
+  <ul>
+    <li>Lorem ipsum dolor sit amet.</li>
+    <li>Culpa magnam excepturi recusandae possimus.</li>
+    <li>Dolorem, provident? Soluta, dolores voluptatibus.</li>
+  </ul>
+  <ul class="list">
+    <li>Lorem ipsum dolor sit amet.</li>
+    <li>Culpa magnam excepturi recusandae possimus.</li>
+    <li>Dolorem, provident? Soluta, dolores voluptatibus.</li>
+  </ul>
+</body>
+
+</html>

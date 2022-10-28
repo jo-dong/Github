@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>텍스트 속성</title>
+  <style>
+    .content1, .content2 {
+      width: 300px;
+      border: 3px solid #000;
+    }
+    .content1 p {
+      word-break: break-all;
+    }
+    .content2 p {
+      text-align: justify;
+    }
+    .white {
+      width: 400px;
+      background-color: #0f0;
+      /* 
+      [white-space]
+        nowrap   : 자동 줄바꿈 해제
+        pre      : pre 태그처럼 입력된 대로 표현
+        pre-wrap : 자동 줄바꿈
+        pre-line : 왼쪽 공백 제거
+      */
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="content1">
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut non eum deserunt ducimus dolores quod eius, modi aliquam autem? Nulla vel suscipit facilis ex aliquam accusamus eius officia sunt odit!</p>
+  </div>
+  <div class="content2">
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut non eum deserunt ducimus dolores quod eius, modi aliquam autem? Nulla vel suscipit facilis ex aliquam accusamus eius officia sunt odit!</p>
+  </div>
+  <div class="white">
+    lorem
+    Lorem, ipsum dolor.
+    Lorem ipsum dolor sit amet.
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit odit necessitatibus sint facilis nam soluta libero quas praesentium at eum doloribus ea id neque repellendus quia qui, vero fugiat dolor!
+  </div>
+  
+</body>
+</html>

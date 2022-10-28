@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>텍스트 속성</title>
+  <style>
+    h1 {
+      /* uppercase | lowercase |  */
+      text-transform: capitalize;
+    }
+    #p2 {
+      background-color: #0f0;
+      /* left | right | center | justify */
+      text-align: justify;
+      
+      /* underline | overline | line-through */
+      text-decoration: line-through;
+
+      /* 들여쓰기 */
+      text-indent: 20px;
+
+      /* 자간 : 글자 사이 간격 */
+      letter-spacing: 2px;
+
+      /* 단어 사이 간격 */
+      word-spacing: 10px;
+
+      /* 자동 줄바꿈 해제 */
+      white-space: nowrap;
+    }
+    div {
+      text-indent: -100em;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <h1>Heading h1</h1>
+    <p id="p1">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis exercitationem deserunt eos nulla doloremque enim omnis ratione perspiciatis labore itaque maxime accusamus ut laboriosam ipsam est, aliquid iusto! Voluptates, quasi?</p>
+    <p id="p2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis exercitationem deserunt eos nulla doloremque enim omnis ratione perspiciatis labore itaque maxime accusamus ut laboriosam ipsam est, aliquid iusto! Voluptates, quasi?</p>
+    <div>Lorem, ipsum.</div>
+  </div>  
+</body>
+</html>
