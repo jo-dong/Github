@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+</head>
+<body>
+	<h1>Happy Market</h1>
+	<p>회원 관리</p>
+	<p>
+		<a href="/member/new">회원 가입</a> <a href="/member/list">회원 목록</a>
+	</p>
+	<form action="/member/search">
+			<div>
+				<label>아이디 : </label> 
+				<input type="text" name="id"> 
+			</div>
+	</form>
+	<form action="/member/searchName">
+			<div>
+				<label>이름 : </label> 
+				<input type="text" name="name"> 
+			</div>
+		<input type="submit" value="검색">
+	</form>
+</body>
+</html>
