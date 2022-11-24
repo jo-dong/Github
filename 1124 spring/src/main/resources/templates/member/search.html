@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>아이디 검색 결과</h1>
+	<p>
+	<!-- 1) 아이디 : <span th:text="${member.id}"></span> -->
+	<!-- 2) 아이디 : <span th:text="${member!=null ? member.id : null}"></span> -->
+		아이디 : <span th:text="${member?.id}"></span>	<!-- 3항 연산자 축약 -->
+	</p>
+	<p>
+	<!-- 1) 이름 : <span th:text="${member.name}"></span> -->
+	<!-- 2) 이름 : <span th:text="${member!=null ? member.name : null}"></span> -->
+		이름 : <span th:text="${member?.name}"></span>
+	</p>
+	<a href="/">첫 페이지로 이동</a>
+</body>
+</html>
