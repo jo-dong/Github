@@ -87,15 +87,17 @@ public class ControllerPost {
 	// 요청 url : /quiz
 	@PostMapping("/quiz1")
 	public String quizOne(@RequestBody Member member, Model model) {
-		System.out.println(member.getName());
-		System.out.println(member.getAge());
+		System.out.println("name : " + member.getName());
+		System.out.println("age : " + member.getAge());
+		model.addAttribute(member); 
+// 		를 생략하면 member data가 model에 저장이 되지 않는다.
 		return "member/member-quiz";
 	}
 	
 	@PostMapping("/quiz2")
 	public ModelAndView quizTwo(@RequestBody Member member) {
 		ModelAndView mav = new ModelAndView("member/member-quiz")
-						   .addObject("member", member);
+						   .addObject(member);
 		return mav;
 	}
 	
