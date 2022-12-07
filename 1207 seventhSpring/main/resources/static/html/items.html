@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+	<!-- START : HEADER -->
+	<div class="b-example-divider"></div>
+
+	<header class="p-3 text-bg-dark">
+		<div class="container">
+			<div
+				class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+				<a href="/"
+					class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+					<svg class="bi me-2" width="40" height="32" role="img"
+						aria-label="Bootstrap">
+						<use xlink:href="#bootstrap" /></svg>
+				</a>
+
+				<ul
+					class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+					<li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+					<li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+					<li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+					<li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+					<li><a href="#" class="nav-link px-2 text-white">About</a></li>
+				</ul>
+
+				<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+					<input type="search"
+						class="form-control form-control-dark text-bg-dark"
+						placeholder="Search..." aria-label="Search">
+				</form>
+
+				<div class="text-end">
+					<button type="button" class="btn btn-outline-light me-2">Login</button>
+					<button type="button" class="btn btn-warning">Sign-up</button>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- END : HEADER -->
+	<!-- START : CONTAINER -->
+	<div class="container" style="max-width: 600px">
+		<div class="text-center py-5 mt-3">
+			<h1 class="fw-bold">상품 목록</h1>
+		</div>
+		<hr>
+		<!-- table -->
+		<div>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">상품명</th>
+						<th scope="col">가격</th>
+						<th scope="col">수량</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- 이 file은 static folder라서 controller와 연관 X -->
+					<!-- Thymeleaf 적용 안됨 -->
+					<tr>
+						<th scope="row"><a href="item.html">1</a></th>
+						<td><a href="item.html">초코파이</a></td>
+						<td>2,000</td>
+						<td>3</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="item.html">2</a></th>
+						<td><a href="item.html">조지아 크래프트</a></td>
+						<td>1,700</td>
+						<td>1</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="item.html">3</a></th>
+						<td><a href="item.html">Eclipse</a></td>
+						<td>30,000</td>
+						<td>16</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- button -->
+		<div class="d-grid gap-2">
+			<!-- button 클릭 시 페이지 이동 : Javascript(Event) {onclick} -->
+			<button type="button" class="btn btn-dark btn-lg"
+				onclick="location.href='addForm.html'">상품 등록</button>
+		</div>
+	</div>
+	<!-- END : CONTAINER -->
+</body>
+</html>

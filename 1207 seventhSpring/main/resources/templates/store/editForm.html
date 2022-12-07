@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<!-- href="../../css/bootstrap.min.css" -->
+</head>
+<body>
+	<!-- START : HEADER -->
+	<div th:replace="/fragments/header :: headerFragment"></div>
+	<!-- END : HEADER -->
+	
+	<!-- START : CONTAINER -->
+	<div class="container" style="max-width: 600px">
+		<!-- h1 -->
+		<div class="text-center py-5 mt-3">
+			<h1 class="fw-bold">상품 수정</h1>
+		</div>
+		<!-- form -->
+		<form th:action="@{|/store/items/${itemId}/edit|}" method="post">
+			<input type="hidden" name="_method" value="PUT">
+			<!-- itemId -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="itemId" class="form-label fw-bold">상품 ID</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="itemId" name="itemId"
+						th:value="${itemId}" readonly>
+				</div>
+			</div>
+			<!-- itemName -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="itemName" class="form-label fw-bold">상품명</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="itemName"
+						name="itemName" placeholder="수정할 상품명을 입력하세요.">
+				</div>
+			</div>
+			<!-- price -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="price" class="form-label fw-bold">가격</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="price" name="price"
+						placeholder="수정할 가격을 입력하세요.">
+				</div>
+			</div>
+			<!-- quantity -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="quantity" class="form-label fw-bold">수량</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="quantity"
+						name="quantity" placeholder="수정할 수량을 입력하세요.">
+				</div>
+			</div>
+
+			<hr>
+			<!-- Button -->
+			<div class="row">
+				<div class="col">
+					<button type="button"
+						class="btn btn-outline-secondary btn-lg w-100 fw-bold"
+						th:onclick="|location.href='@{..}'|">취소</button>
+				</div>
+				<div class="col">
+					<button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">저장</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END : CONTAINER -->
+	
+	<!-- START : FOOTER -->
+	<div th:replace="/fragments/footer :: footerFragment"></div>
+	<!-- END : FOOTER -->
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<style type="text/css">
+.col {
+	background-color: #eee;
+	border: #ddd 2px solid;
+}
+</style>
+</head>
+<body>
+	<!-- 기본 : grid는 12개의 column으로 인식 -->
+	<div class="container text-center">
+		<div class="row">
+			<div class="col">1</div>
+			<div class="col">2</div>
+			<div class="col">3</div>
+			<div class="col">4</div>
+			<div class="col">5</div>
+			<div class="col">6</div>
+			<div class="col">7</div>
+			<div class="col">8</div>
+			<div class="col">9</div>
+			<div class="col">10</div>
+			<div class="col">11</div>
+			<div class="col">12</div>
+		</div>
+	</div>
+	<!-- column이 3개인 경우 -->
+	<div class="container text-center">
+		<div class="row">
+			<div class="col">1</div>
+			<div class="col">2</div>
+			<div class="col">3</div>
+		</div>
+	</div>
+	<!-- column이 3개인 경우 : col-md-auto -->
+	<div class="container text-center">
+		<div class="row">
+			<div class="col">1</div>
+			<!-- col-md-3 : col-md의 폭을 따르면서 grid 3칸 차지 -->
+			<div class="col col-md-3">Lorem Ipsum is simply dummy text
+				of the printing and typesetting industry</div>
+			<div class="col">3</div>
+		</div>
+	</div>
+	<!-- column이 2개인 경우 : col-# -->
+	<div class="container text-center">
+		<div class="row">
+			<div class="col-8" style="background-color: #eee">8칸</div>
+			<div class="col-4" style="background-color: #eee">4칸</div>
+		</div>
+	</div>
+</body>
+</html>

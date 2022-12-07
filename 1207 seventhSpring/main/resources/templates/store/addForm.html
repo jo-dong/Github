@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<!-- href="../../css/bootstrap.min.css" -->
+</head>
+<body>
+	<!-- START : HEADER -->
+	<div th:replace="/fragments/header.html :: headerFragment"></div>
+	<!-- END : HEADER -->
+	
+	<!-- START : CONTAINER -->
+	<div class="container" style="max-width: 600px">
+		<!-- h1 -->
+		<div class="text-center py-5 mt-3">
+			<h1 class="fw-bold">상품 등록 폼</h1>
+		</div>
+
+		<form action="/store/items/add" method="post">
+			<!-- itemName -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="itemName" class="form-label fw-bold">상품명</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="itemName"
+						name="itemName" placeholder="상품명을 입력하세요.">
+				</div>
+			</div>
+			<!-- price -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="price" class="form-label fw-bold">가격</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="price" name="price"
+						placeholder="가격을 입력하세요.">
+				</div>
+			</div>
+			<!-- quantity -->
+			<div class="row my-2">
+				<div class="col-3">
+					<label for="quantity" class="form-label fw-bold">수량</label>
+				</div>
+				<div class="col-9">
+					<input class="form-control" type="text" id="quantity"
+						name="quantity" placeholder="수량을 입력하세요.">
+				</div>
+			</div>
+
+			<hr>
+			<!-- Button -->
+			<div class="row">
+				<div class="col">
+					<button type="button"
+						class="btn btn-outline-secondary btn-lg w-100 fw-bold"
+						th:onclick="|location.href='@{/store/items}'|">취소</button>
+				</div>
+				<div class="col">
+					<button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">등록</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END : CONTAINER -->
+	
+	<!-- START : FOOTER -->
+	<div th:replace="/fragments/footer.html :: footerFragment"></div>
+	<!-- END : FOOTER -->
+</body>
+</html>
