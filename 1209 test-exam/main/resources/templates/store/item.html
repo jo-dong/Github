@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+	<!-- START : HEADER -->
+	<header class="p-3 text-bg-dark">
+			<div class="container">
+				<div
+					class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+					<a href="/"
+						class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+						<svg class="bi me-2" width="40" height="32" role="img"
+							aria-label="Bootstrap">
+						<use xlink:href="#bootstrap" /></svg>
+					</a>
+
+					<ul
+						class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+						<li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+						<li><a href="/store/items" class="nav-link px-2 text-white">List</a></li>
+						<li><a href="/store/items/add"
+							class="nav-link px-2 text-white">Registration</a></li>
+					</ul>
+
+					<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+							action="/store/items/search" method="post">
+					<div class="text-end row">
+						<input type="text"
+							class="form-control form-control-dark text-bg-dark col"
+							placeholder="Search..." aria-label="Search" 
+							name="itemName" >
+
+						<button type="submit" class="btn btn-outline-light me-2 col">Search</button>
+					</div>
+					</form>
+				</div>
+			</div>
+		</header>
+	<!-- END : HEADER -->
+	<!-- START : CONTAINER -->
+	<div class="container" style="max-width: 600px">
+		<!-- h1 -->
+		<div class="text-center py-5 mt-3">
+			<h1 class="fw-bold">상품 상세</h1>
+		</div>
+		<!-- id -->
+		<div class="row my-2">
+			<div class="col-3">
+				<label for="id" class="form-label fw-bold">상품 ID</label>
+			</div>
+			<div class="col-9">
+				<input class="form-control" type="text" id="id" name="id"
+					th:value="${item?.id}" readonly>
+			</div>
+		</div>
+		<!-- itemName -->
+		<div class="row my-2">
+			<div class="col-3">
+				<label for="itemName" class="form-label fw-bold">상품명</label>
+			</div>
+			<div class="col-9">
+				<input class="form-control" type="text" id="itemName"
+					name="itemName" th:value="${item?.itemName}" readonly>
+			</div>
+		</div>
+		<!-- price -->
+		<div class="row my-2">
+			<div class="col-3">
+				<label for="price" class="form-label fw-bold">가격</label>
+			</div>
+			<div class="col-9">
+				<input class="form-control" type="text" id="price" name="price"
+					th:value="${item?.price}" readonly>
+			</div>
+		</div>
+		<!-- quantity -->
+		<div class="row my-2">
+			<div class="col-3">
+				<label for="quantity" class="form-label fw-bold">수량</label>
+			</div>
+			<div class="col-9">
+				<input class="form-control" type="text" id="quantity"
+					name="quantity" th:value="${item?.quantity}" readonly>
+			</div>
+		</div>
+
+		<hr>
+		<!-- Button -->
+		<div class="row">
+			<div class="col">
+				<button type="button"
+					class="btn btn-outline-secondary btn-lg w-100 fw-bold"
+					th:onclick="|location.href='@{/store/items}'|">목록으로</button>
+			</div>
+			<div class="col">
+				<button type="button" class="btn btn-dark btn-lg w-100 fw-bold"
+					th:onclick="|location.href='@{/store/items/{itemId}/edit(itemId=${item.id})}'|">상품
+					수정</button>
+			</div>
+		</div>
+	</div>
+	<!-- END : CONTAINER -->
+	<!-- START : FOOTER -->
+	<div class="container">
+		<footer
+			class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+			<p class="col-md-4 mb-0 text-muted">&copy; 2022 Company, Inc</p>
+
+			<a href="/"
+				class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+				<svg class="bi me-2" width="40" height="32">
+					<use xlink:href="#bootstrap" /></svg>
+			</a>
+
+			<ul class="nav col-md-4 justify-content-end">
+				<li class="nav-item"><a href="/"
+					class="nav-link px-2 text-muted">Home</a></li>
+				<li class="nav-item"><a href="/store/items"
+					class="nav-link px-2 text-muted">List</a></li>
+				<li class="nav-item"><a href="/store/items/add"
+					class="nav-link px-2 text-muted">Registration</a></li>
+			</ul>
+		</footer>
+	</div>
+	<!-- END : FOOTER -->
+</body>
+</html>
