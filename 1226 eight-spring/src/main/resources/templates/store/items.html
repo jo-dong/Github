@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		th:replace="~{fragments/layout-form::layout(~{::title}, ~{::section})}">
+
+<title>상품 목록</title>
+
+<!-- START : CONTAINER -->
+<section>
+	<div class="text-center my-5">
+		<h1>상품 목록</h1>
+	</div>
+
+	<hr>
+
+	<!-- table  -->
+	<div>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>상품명</th>
+					<th>가격</th>
+					<th>수량</th>
+					<th>판매 여부</th>
+					<th>상품 종류</th>
+					<th>배송 방식</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="item: ${items}">
+					<td><a href="item.html" 
+							th:href="@{|/store/items/${item.id}|}"
+							th:text="${item.id}">1</a></td>
+					<td><a href="item.html" 
+							th:href="@{|/store/items/${item.id}|}"
+							th:text="${item.itemName}">마카롱</a></td>
+					<td th:text="${item.price}">2200</td>
+					<td th:text="${item.quantity}">20</td>
+					<td th:text="${item.open}? '판매 중' : '판매 중지'">오픈</td>
+					<!-- <td th:text="${item.open}">오픈</td>
+					<td th:text="${item.regions}">서울</td>
+					<td th:text="${item.itemtype}">뷰티</td>-->
+					<td th:text="${item.itemType}">뷰티</td>
+					<td th:switch="${item.deliveryCode}">
+						<span th:case="TODAY">당일 배송</span>						
+						<span th:case="NORMAL">보통 배송</span>						
+						<span th:case="SLOW">느린 배송</span>						
+					<td>
+					<!-- <td th:text="${item.deliveryCode.toString().equals('TODAY')}" >당일 배송</td> -->
+<!-- 						<th:bock th:with="var = ${item.deliveryCode}">
+							<td th:text="${#strings.length(var)}"> </td>
+						</th:bock> -->
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- 상품 등록 버튼 -->
+	<div class="d-grid gap-2">
+		<button type="button" class="btn btn-secondary btn-lg"
+			onclick="location.href='/store/items/add'">상품 등록</button>
+	</div>
+</section>
+<!-- END : CONTAINER -->

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		th:replace="~{fragments/layout-form::layout(~{::title}, ~{::section})}">
+
+<title>상품 등록</title>
+
+<!-- START : CONTAINER -->
+<section>
+<div class="text-center my-5">
+	<h1>상품 등록 폼</h1>
+</div>
+
+
+<!--/* 
+================================================
+th:object	: 커맨드 객체 지정
+*{} 		: Selection Variable Expressions 
+			  선택 변수 표현식, th:object 객체 접근
+th:field 	: id, name, value 속성 자동 생성					
+================================================
+*/-->
+
+<!--/* 
+th:object="${item}"		: form에서 사용할 객체를 item으로 지정 
+						  -> 이후 선택 변수 표현식 사용 가능
+
+*{itemName}				: ${item.itemName}과 같다
+
+th:field="*{itemName}" 	: id="itemName"
+						  name="itemName"							  
+  						  value=""	
+*/-->
+<!-- <form th:action method="post"> -->
+<form action="item.html" th:action th:object="${item}" method="post">
+	<div class="row my-2">
+		<div class="col-2">
+			<label for="itemName" class="form-label fw-bold">상품명</label>
+		</div>
+		<div class="col">
+
+			<!--
+			 [렌더링 후 소스보기(ctrl+u)에서 확인] 
+			 1) id 		속성 값 확인
+			 2) name 	속성 값 확인
+			 3) value 	속성 값 확인
+			 -->
+				<!-- 
+			<input type="text" id="itemName" name="itemName"
+				class="form-control" placeholder="이름을 입력하세요"> -->
+			<input type="text" th:field="*{itemName}" 
+				class="form-control" placeholder="이름을 입력하세요">
+		</div>
+	</div>
+
+	<div class="row my-2">
+		<div class="col-2">
+			<label for="price" class="form-label fw-bold">가격</label>
+		</div>
+		<div class="col">
+			<!-- 
+			<input type="text" id="price" name="price" 
+				class="form-control" placeholder="가격을 입력하세요"> -->
+			<input type="text" id="price" th:field="*{price}"  
+				class="form-control" placeholder="가격을 입력하세요">
+		</div>
+	</div>
+
+	<div class="row my-2">
+		<div class="col-2">
+			<label for="quantity" class="form-label fw-bold">수량</label>
+		</div>
+		<div class="col">
+			<!-- 
+			<input type="text" id="quantity" name="quantity"
+				class="form-control" placeholder="수량을 입력하세요"> -->
+			<input type="text" id="quantity" th:field="*{quantity}" 
+				class="form-control" placeholder="수량을 입력하세요">
+		</div>
+	</div>
+
+	<hr>
+	<!-- 추가된 코드 : START -->
+	<!-- single check box -->
+	<div class="row my-2">
+		<div class="col-2">
+			<label for="open" class="form-label fw-bold">판매 여부</label>
+		</div>
+		<div class="col">
+		<div class="form-check">
+			<!-- <input type="checkbox" id="open" name="open" class="form-check-input"> -->
+			
+			<!-- hidden field  -->
+			<!-- <input type="hidden" name="_open" value="on"> -->
+			
+			<!-- thymeleaf  -->
+			<input type="checkbox" id="open" th:field="*{open}" class="form-check-input">
+			<label for="open" class="form-check-label">판매 중</label>
+		</div>
+		</div>
+	</div>
+	
+	<!-- multi check box -->
+	<!--
+	[Thymeleaf Tutorial] p.20~p.21 / p.104
+	#ids : 	methods for dealing with id attributes that might be repeated 
+			(for example, as a result of an iteration).
+	#ids.prev('regions')	: 1부터 시작	
+	#ids.next('regions')	: 2부터 시작
+	 -->
+	<div class="row my-2">
+		<div class="col-2">
+			<label for="regions1" class="form-label fw-bold">등록 지역</label>
+		</div>
+		<div class="col">
+			<div th:each="region: ${regions}" class="form-check form-check-inline">
+				<input type="checkbox" th:field="*{regions}" th:value="${region.key}" class="form-check-input">
+				<label th:for="${#ids.prev('regions')}"
+						th:text="${region.value}" class="form-check-label">서울</label>
+			</div>
+		</div>
+	</div>
+	 
+	<!-- radio button -->
+	<div class="row my-2">
+		<div class="col-2">
+			<label class="form-label fw-bold" for="itemType1">상품 종류</label>
+		</div>
+		<div class="col">
+			<div th:each="type: ${itemTypes}" class="form-check form-check-inline">
+				<input type="radio" th:field="*{itemType}" th:value="${type.name()}" 
+						class="form-check-input">
+				<!-- <label th:for="${#ids.prev('itemType')}" th:text="${type}" -->
+				<label th:for="${#ids.prev('itemType')}" th:text="${type.description}"
+						class="form-check-label">BOOK</label>
+			</div>
+		</div>
+	</div>
+	
+	<!-- select box -->
+	<div class="row my-2">
+		<div class="col-2">
+			<label class="form-label fw-bold">배송 방식</label>
+		</div>
+		<div class="col">
+			<select th:field="*{deliveryCode}" class="form-select">
+				<option value="">배송 방식</option>
+				<option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"
+						th:text="${deliveryCode.displayName}">FAST</option>
+			</select>
+		</div>
+	</div>
+	
+	<hr>
+	<!-- 추가된 코드 : END -->
+
+	<div class="row">
+		<div class="col">
+			<button type="button" class="btn btn-outline-dark btn-lg w-100"
+				onclick="location.href='/html/item.html'"
+				th:onclick="|location.href='@{/store/items}'|">취소</button>
+			</div>
+			<div class="col">
+				<button type="submit" class="btn btn-secondary btn-lg w-100">상품 등록</button>
+			</div>
+		</div>
+	</form>
+</section>
+<!-- END : CONTAINER -->
