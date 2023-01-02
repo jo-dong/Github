@@ -1,0 +1,13 @@
+INSERT INTO "PUBLIC"."ITEM" VALUES
+(1, 'TODAY', U&'\d558\c774', 'BEAUTY', TRUE, 1000, 10),
+(2, 'NORMAL', U&'\cd08\cf54\bc14', 'FASHION', TRUE, 2000, 20),
+(3, 'SLOW', U&'\cd08\cf54\b9c1', 'ETC', FALSE, 3000, 30);
+
+INSERT INTO "PUBLIC"."REGIONS" VALUES
+(1, 'SEOUL'),
+(1, 'INCHEON'),
+(2, 'INCHEON'),
+(2, 'DAEGU'),
+(3, 'ULSAN'),
+(3, 'BUSAN'),
+(3, 'JEJU');
