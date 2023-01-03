@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <table style="border: 1px solid #000">
+        <thead>
+          <tr>
+            <th>순번</th>
+            <th>제목</th>
+            <th>좋아요</th>
+            <th>싫어요</th>
+            <th>작성 시간</th>
+            <th>수정 시간</th>
+            <th>조회수</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="board: ${list}">
+            <td th:text="${board.boardIdx}">순번</td>
+            <td>
+              <a
+                th:href="@{|/board/${board.boardIdx}|}"
+                th:text="${board.title}"
+                >제목</a
+              >
+            </td>
+            <td th:text="${board.likes}">좋아요</td>
+            <td th:text="${board.dislikes}">싫어요</td>
+            <td th:text="${board.createDate}">작성 시간</td>
+            <td th:text="${board.updateDate}">수정 시간</td>
+            <td th:text="${board.hitCnt}">조회수</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <th:block th:each="page:${#numbers.sequence(startPage,endPage)}">
+        <a
+          th:if="${page != currentPage}"
+          th:href="@{/board(page=${page-1})}"
+          th:text="${page}"
+        ></a>
+        <strong
+          th:if="${page==currentPage}"
+          th:text="${page}"
+          style="color: red"
+        ></strong>
+      </th:block>
+
+		<br>
+      <input
+        type="button"
+        th:onclick="|location.href='@{/board/write}'|"
+        value="게시글 작성"
+      />
+      <input
+        type="button"
+        th:onclick="|location.href='@{/}'|"
+        value="메인으로"
+      />
+    </div>
+  </body>
+</html>
