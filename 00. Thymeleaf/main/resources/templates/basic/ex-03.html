@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>[반복문] th:each</h1>
+	
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>ITEM NAME</th>
+			<th>PRICE</th>
+			<th>QUANTITY</th>
+		</tr>
+		<tr th:each="item: ${items}">
+			<td th:text="${item.id}"></td>
+			<td th:text="${item.itemName}"></td>
+			<td th:text="${item.price}"></td>
+			<td th:text="${item.quantity}"></td>
+		</tr>
+	</table>
+	
+	<!-- 
+	[상태 변수]
+	<< 문법 >> 변수명Stat
+	 th:each를 사용하면 기본적으로 status 변수 제공
+	 * index	: 현재 인덱스 (0부터 시작)
+	 * count	: 현재 인덱스 (1부터 시작)
+	 * size		: 전체 개수
+	 * current	: 현재 요소 (주소)
+	 * even		: 현재 반복이 짝수인지 여부 (boolean)
+	 * odd		: 현재 반복이 홀수인지 여부 (boolean)
+	 * first	: 현재 반복이 첫번째인지 여부 (boolean)
+	 * last		: 현재 반복이 마지막인지 여부 (boolean)
+	 -->
+	
+	<div th:each="item: ${items}">
+		<div th:text="|index : ${itemStat.index}|"></div>
+		<div th:text="|count : ${itemStat.count}|"></div>
+		<div th:text="|size : ${itemStat.size}|"></div>
+		<div th:text="|current : ${itemStat.current}|"></div>
+		<div th:text="|even : ${itemStat.even}|"></div>
+		<div th:text="|odd : ${itemStat.odd}|"></div>
+		<div th:text="|first : ${itemStat.first}|"></div>
+		<div th:text="|last : ${itemStat.last}|"></div>
+	</div>
+
+</body>
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html th:fragment="layout (title, content)" xmlns:th="http://www.thymeleaf.org">
+
+<!-- head 영역 -->
+<head>
+<title th:replace="${title}">타이틀</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body>
+	<!-- header 영역 -->
+	<div th:replace="~{layoutTwo/header :: header}">header 영역</div>
+	
+	<!-- content 영역 -->
+	<div th:replace="${content}">
+		
+	</div>
+
+	<!-- footer 영역 -->
+	<div th:replace="layoutTwo/footer :: copy">footer 영역</div>
+</body>
+</html>

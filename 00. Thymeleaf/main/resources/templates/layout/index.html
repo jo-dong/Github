@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- head 영역 -->
+<head th:replace="~{layout/head :: common_head(~{::title}, ~{::link})}">
+<title>인덱스페이지</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body>
+	<!-- header 영역 -->
+	<div th:replace="~{layout/header :: header}">header 영역</div>
+	
+	<div class="container-md">
+		<h1>INDEX.html</h1>
+		<div class="mb-3">
+			<label for="exampleFormControlInput1" class="form-label">Email address</label> 
+			<input type="email" class="form-control" id="exampleFormControlInput1"
+				placeholder="name@example.com">
+		</div>
+		<div class="mb-3">
+			<label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+			<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+		</div>
+		<div><a href="/table-view" >Table View 이동</a></div>
+	</div>
+
+	<!-- footer 영역 -->
+	<!-- <div th:replace="footer">footer 영역</div> -->
+	<div th:replace="layout/footer :: copy">footer 영역</div>
+</body>
+</html>

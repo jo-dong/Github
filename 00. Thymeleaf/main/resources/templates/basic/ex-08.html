@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<!-- p.17 - Fragment Expressions: ~{...} -->
+	<!-- p.24, p.44 - Fragments -->
+	
+	<!-- th:insert -->
+	<p th:insert="~{basic/header :: header}"></p> 
+	
+	<h1>MAIN PAGE입니다.</h1>
+	
+	<!-- th:replace -->
+	<p id="main-footer" th:replace="~{basic/footer :: copy}"></p>
+	
+</body>
+</html>

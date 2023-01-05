@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		th:replace="~{layoutTwo/layoutForm :: layout( ~{::title}, ~{::section})}">
+
+<!-- head 영역 -->
+<!-- <head th:replace="layout/head :: common_head(~{::title},~{::link})"> -->
+<title>테이블 뷰</title>
+<!-- <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"> -->
+</head>
+
+<body>
+	<!-- header 영역 -->
+	<!-- <div th:replace="layout/header :: header">header 영역</div> -->
+
+	<section class="container-sm">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">First</th>
+					<th scope="col">Last</th>
+					<th scope="col">Handle</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th scope="row">1</th>
+					<td>Mark</td>
+					<td>Otto</td>
+					<td>@mdo</td>
+				</tr>
+				<tr>
+					<th scope="row">2</th>
+					<td>Jacob</td>
+					<td>Thornton</td>
+					<td>@fat</td>
+				</tr>
+				<tr>
+					<th scope="row">3</th>
+					<td colspan="2">Larry the Bird</td>
+					<td>@twitter</td>
+				</tr>
+			</tbody>
+		</table>
+		<div><a href="/list-view" th:href="@{list-view}" class="center">List View 이동</a></div>
+	</section>
+
+	<!-- footer 영역 -->
+	<!-- <div th:replace="footer">footer 영역</div> -->
+	<!-- <div th:replace="layout/footer :: copy">footer 영역</div> -->
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>데이터 바인딩</h1>
+
+	<h3>[content] th:text</h3>
+	<div th:text="${test}">content</div>
+
+	<h3>[content] data-th-text</h3>
+	<div data-th-text="${test}">content</div>
+	
+	<h3>Appending text : + 연산자 사용</h3>
+	<div th:text="${test} + '나는 문자열이다.'">content</div>
+
+	<h3>[리터럴 치환] Literal substitutions : + 연산자 없이 문자열 연산 가능  </h3>
+	<div th:text="|${test} 나는 문자열이다.|">content</div>
+	
+	<h3>[value 속성 값 지정] th:value</h3>
+	<input type="text" th:value="${test}">
+	<input type="button" th:value="${test}">
+
+	<h3>[property에 다른 이름 지정] th:with</h3>
+	<div th:with="var=${test}" th:text="${var}"></div>
+
+	<h3>[연산 결과 저장 1] th:with</h3>
+	<div th:with="var=(5 % 2)" th:text="${var}"></div>
+
+	<h3>[연산 결과 저장 2] th:with</h3>
+	<div th:with="var=(5 % 2 == 2)" th:text="${var}"></div>
+
+	<h3>[연산 결과 저장 3] th:with</h3>
+	<div th:with="var=${num} % 2" th:text="|연산 결과값 = ${var}|"></div>
+	<div th:with="var=(${num} % 2)" th:text="|연산 결과값 = ${var}|"></div>
+</body>
+</html>

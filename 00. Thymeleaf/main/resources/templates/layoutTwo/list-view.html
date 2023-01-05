@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		th:replace="~{layoutTwo/layoutForm :: layout( ~{::title}, ~{::section})}">
+
+<!-- header 영역 -->
+<!-- <head th:replace="layout/head :: common_head(~{::title},~{::link})"> -->
+<title>리스트 뷰</title>
+<!-- <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"> -->
+</head>
+
+<body>
+	<!-- header 영역 -->
+	<!-- <div th:replace="layout/header :: header">header 영역</div> -->
+	
+	<section class="container-sm">
+		<div class="list-group my-5">
+			<a href="#" class="list-group-item list-group-item-action active" aria-current="true"> The current link item </a> 
+			<a href="#" class="list-group-item list-group-item-action">A second link item</a> 
+			<a href="#" class="list-group-item list-group-item-action">A third link item</a> 
+			<a href="#" class="list-group-item list-group-item-action">A fourth link item</a> 
+			<a class="list-group-item list-group-item-action disabled">A disabled link item</a>
+		</div>
+	</section>
+
+	<!-- footer 영역 -->
+	<!-- <div th:replace="footer">footer 영역</div> -->
+	<!-- <div th:replace="layout/footer :: copy">footer 영역</div> -->
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+  <h1>[문법] th:if="${변수명}==값"</h1>
+  <h3>[조건 1개 1.1] 조건 true</h3>
+  <div th:if="${test}=='WHY?'" th:text="${test}"></div>
+
+  <h3>[조건 1개 1.2] 조건 false : 엘리먼트가 화면에 표시 안됨!</h3>
+  <div th:if="${test}=='whywhy'" th:text="${test}"></div>
+
+  <h3>[조건 2개 2.1] 조건 true</h3>
+  <div th:if="${test}=='WHY?'" th:text="${test}"></div>  
+  <div th:unless="${test}=='WHY?'" th:text="'전혀 궁금하지 않아!"></div>
+
+  <h3>[조건 2개 2.2] 조건 false : </h3>
+  <div th:if="${test}=='whywhy'" th:text="${test}"></div>  
+  <div th:unless="${test}=='whywhy'" th:text="'전혀 궁금하지 않아!'"></div>
+  
+  <h1>[삼항 연산자] if~then~else</h1>
+  <!-- 
+  	<<문법>>  if ? then    : else
+  	         조건? true일때: false일때  
+   -->
+  <h3>[조건 2개 3.1] </h3>
+  <div th:text="${test}=='why' ? 'true이다' : 'false이다'"></div>
+  
+  <h3>[조건 2개 3.2]</h3>
+  <div th:text="'조건 결과 :' + ${test}!='why'? 'true이다' : 'false이다'"></div>
+  <div th:text="'조건 결과 :' + (${test}!='why'? 'true이다' : 'false이다')"></div>
+  <div th:text="'조건 결과 :' + ((${test}!='why')? 'true이다' : 'false이다')"></div>
+
+  <h3>[조건 2개 3.3]</h3>
+  <div th:text="|조건 결과 : | + ((${test}!='why')? 'true이다' : 'false이다')"></div>
+  <div th:text="|조건 결과 : | + ${test}!='why'? 'true이다' : 'false이다'|"></div>
+  
+   <h3>[조건 2개 3.4] 조건 비교가 같다일 때 (둘 중 하나일 경우)</h3>
+   <div th:text="${test} ? 'WHY?' : 'why'"></div>
+   <div th:text="${nullValue} ? 'WHY?' : 'why'"></div>
+  
+  <!-- 3.4의 축약형 -->
+   <h3>[조건 2개 3.5] Elvis 연산</h3>
+   <div th:text="${test}?: 'null이다'"></div>
+   <div th:text="${nullValue}?: 'null이다'"></div>
+  
+  <!-- 3.5의 축약형 -->
+   <h3>[조건 2개 3.6] No-Operation</h3>
+   <div th:text="${test}?: _">텍스트입니다.</div>
+   <div th:text="${nullValue}?: _">텍스트입니다.</div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<!-- 
+	[th:text]
+	* escape 처리 후 텍스트 출력
+	* 변수 내 태그 문자를 텍스트 출력
+	 -->
+	<div th:text="${element}"></div>
+	
+	<!-- 
+	[th:utext]
+	* 변수의 값을 escape 처리하지 않고 표시
+	  -->
+	<div th:utext="${element}"></div>
+</body>
+</html>

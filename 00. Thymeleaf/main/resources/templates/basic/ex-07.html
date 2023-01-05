@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	h4 {
+		background-color: #eee;
+		margin-bottom: 0.5em;
+	}
+</style>
+<body>
+	
+	<!-- p.61 -->
+	<h1>주석</h1>
+	
+	<h4>HTML comment</h4>
+	<!-- <a th:href="@{/fourth}">ex_04 페이지로 이동</a> -->
+	
+	<h4>Thymeleaf parser-level comment blocks 1</h4>
+	<!--/* This code will be removed at Thymeleaf parsing time! */-->
+	<!--/* <a th:href="@{/fourth}">ex_04 페이지로 이동</a> */-->
+	
+	<h4>Thymeleaf parser-level comment blocks 2</h4>
+	<!--/*-->
+	<a th:href="@{/fourth}">ex_04 페이지로 이동</a>
+	<a th:href="@{/fourth}">ex_04 페이지로 이동</a>
+	<a th:href="@{/fourth}">ex_04 페이지로 이동</a>
+	<!--*/-->
+
+</body>
+</html>

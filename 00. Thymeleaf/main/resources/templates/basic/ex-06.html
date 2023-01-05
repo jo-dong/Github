@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<!-- p.43 -->
+	<h1>switch statements</h1>
+	<div th:switch="${greeting}">
+		<p th:case="|hello|">greeting이 hello인 경우</p>
+		<p th:case="|hi|">greeting이 hi인 경우</p>
+		<p th:case="*">위 조건을 제외한 나머지 모든 경우</p>
+	</div>
+
+</body>
+</html>

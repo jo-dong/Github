@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+	h4 {
+		background-color: #eee;
+		margin-bottom: 0.5em;
+	}
+</style>
+<body>
+	
+	<h1>Link URLs</h1>
+	
+	<!-- http://localhost:8081/fourth -->
+	<h4>첫번째 방법</h4>
+	<a th:href="@{/fourth}">ex_04 페이지로 이동</a>
+
+	<!-- http://localhost:8081/fourth?orderId=5 -->
+	<h4>두번째 방법 : 쿼리 파라미터 추가</h4>
+	<a th:href="@{/fourth(orderId=${id})}">쿼리 파라미터 추가</a>
+
+	<!-- http://localhost:8081/fourth/5/details -->
+	<h4>세번째 방법 : URL 경로에 변수 지정(ERROR!)</h4>
+	<a th:href="@{/fourth/{orderId}/details(orderId=${id})}">URL 경로에 변수 지정</a>
+
+	<!-- http://localhost:8080/fourth/5/details?itemId=5 -->
+	<h4>네번째 방법 : URL 경로에 변수 지정 + 파라미터 지정(ERROR!)</h4>
+	<a th:href="@{/fourth/{orderId}/details(orderId=${id}, itemId=${id})}">URL 경로에 변수 지정</a>
+	
+	<!-- http://localhost:8080/fourth/5? -->
+	<h4>다섯번째 방법 : form action</h4>
+	<form th:action="@{/fourth/{orderId}(orderId=${id})}" method="get">
+		<input type="submit" value="전송">
+	</form>
+
+	<!-- http://localhost:8080/fourth? -->
+	<!-- 현재 페이지 요청 -->
+	<h4>여섯번째 방법 : form action</h4>
+	<form th:action method="get">
+		<input type="submit" value="전송">
+	</form>
+
+</body>
+</html>
